@@ -1,8 +1,12 @@
-all: test
+all: console/test
 
-test: console/test.o
-	gcc -o test console/test.c
+console/test: console/test.o
 
-.PHONY: clean
+console/test.o: console/test.c
+
+.PHONY: clean run
 clean:
-	rm -rf console/*.o
+	rm -rf */*.o */test
+
+run:
+	./console/test
