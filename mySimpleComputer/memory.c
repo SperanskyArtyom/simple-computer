@@ -1,3 +1,5 @@
+#include "stdio.h"
+
 #define MEMORY_SIZE sizeof(MEMORY) / sizeof(int)
 
 int MEMORY[128];

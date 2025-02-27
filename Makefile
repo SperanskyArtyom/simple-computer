@@ -1,12 +1,8 @@
-all: console/test
+all: make
 
-console/test: console/test.o
-
-console/test.o: console/test.c
-
-.PHONY: clean run
+.PHONY: clean run all
 clean:
-	rm -rf */*.o */test
+	rm -rf */*.o
 
 run:
-	./console/test
+	# Commands
