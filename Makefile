@@ -1,4 +1,4 @@
-all: make
+all:
 	echo "mop"
 
 .PHONY: clean run all
