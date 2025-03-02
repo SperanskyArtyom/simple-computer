@@ -11,31 +11,58 @@
 
 int accumulator, icounter, reg;
 
-int sc_regInit(void) {
-  reg = 0;
-  FLAG_SET_TRUE(FLAG_IGNORE_CLOCK);
-  return 0;
+int sc_regInit(void)
+{
+    reg = 0;
+    FLAG_SET_TRUE(FLAG_IGNORE_CLOCK);
+    return 0;
 }
 
-int sc_regSet(int flag, int value) {
-  if (flag != FLAG_OVERFLOW && flag != FLAG_DIV_ZERO && flag != FLAG_MEM_OOB &&
-      flag != FLAG_INVALID_CMD && flag != FLAG_IGNORE_CLOCK) {
-    return -1;
-  }
-  if (value)
-    FLAG_SET_TRUE(flag);
-  else
-    FLAG_SET_FALSE(flag);
-  return 0;
+int sc_regSet(int flag, int value)
+{
+    if (flag != FLAG_OVERFLOW && flag != FLAG_DIV_ZERO && flag != FLAG_MEM_OOB &&
+        flag != FLAG_INVALID_CMD && flag != FLAG_IGNORE_CLOCK)
+    {
+        return -1;
+    }
+    if (value)
+        FLAG_SET_TRUE(flag);
+    else
+        FLAG_SET_FALSE(flag);
+    return 0;
 }
 
-int sc_regGet(int flag, int *value) {
-  if (flag != FLAG_OVERFLOW && flag != FLAG_DIV_ZERO && flag != FLAG_MEM_OOB &&
-      flag != FLAG_INVALID_CMD && flag != FLAG_IGNORE_CLOCK) {
-    return -1;
-  }
-  if (value == NULL)
-    return -1;
-  *value = FLAG_GET(flag);
-  return 0;
+int sc_regGet(int flag, int *value)
+{
+    if (flag != FLAG_OVERFLOW && flag != FLAG_DIV_ZERO && flag != FLAG_MEM_OOB &&
+        flag != FLAG_INVALID_CMD && flag != FLAG_IGNORE_CLOCK)
+    {
+        return -1;
+    }
+    if (value == NULL)
+        return -1;
+    *value = FLAG_GET(flag);
+    return 0;
+}
+
+int sc_accumulatorInit(void)
+{
+    accumulator = 0;
+    return 0;
+}
+
+int sc_accumulatorSet(int value)
+{
+    if (value <= -(1 << 14) || value >= (1 << 14))
+        return -1;
+    accumulator = value;
+    return 0;
+}
+
+int sc_accumulatorGet(int *value)
+{
+    if (value == NULL)
+        return -1;
+    *value = accumulator;
+    return 0;
 }
