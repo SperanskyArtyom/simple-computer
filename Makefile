@@ -7,11 +7,9 @@ INCLUDE_DIR = include
 APP_PATH = $(APP_DIR)/$(APP_NAME)
 LIB_PATH = $(LIB_DIR)/libmy_sc.a
 
-
 APP_SOURCES = $(wildcard $(APP_DIR)/*.c)
 APP_OBJECTS = $(APP_SOURCES:$(APP_DIR)/%.c=$(APP_DIR)/%.o)
 LIB_SOURCES = $(wildcard $(LIB_DIR)/*.c)
-
 
 CC = gcc
 CFLAGS = -Wall -Wextra -I $(INCLUDE_DIR)
