@@ -1,24 +1,41 @@
-#define FLAG_OVERFLOW 1 << 0
-#define FLAG_DIV_ZERO 1 << 1
-#define FLAG_MEM_OOB 1 << 2
-#define FLAG_INVALID_CMD 1 << 3
-#define FLAG_IGNORE_CLOCK 1 << 4
+#include "stddef.h"
+
+#define FLAG_OVERFLOW 0
+#define FLAG_DIV_ZERO 1
+#define FLAG_MEM_OOB 2
+#define FLAG_INVALID_CMD 3
+#define FLAG_IGNORE_CLOCK 4
+#define FLAG_GET(flag) (reg >> flag) & 0x1
+#define FLAG_SET_TRUE(flag) reg = reg | (1 << flag)
+#define FLAG_SET_FALSE(flag) reg = reg & (~(1 << flag))
 
 int accumulator, icounter, reg;
 
 int sc_regInit(void) {
-  reg = 0 | FLAG_IGNORE_CLOCK;
+  reg = 0;
+  FLAG_SET_TRUE(FLAG_IGNORE_CLOCK);
   return 0;
 }
 
 int sc_regSet(int flag, int value) {
-  if (flag != FLAG_OVERFLOW || flag != FLAG_DIV_ZERO || flag != FLAG_MEM_OOB ||
-      flag != FLAG_INVALID_CMD || flag != FLAG_IGNORE_CLOCK) {
+  if (flag != FLAG_OVERFLOW && flag != FLAG_DIV_ZERO && flag != FLAG_MEM_OOB &&
+      flag != FLAG_INVALID_CMD && flag != FLAG_IGNORE_CLOCK) {
     return -1;
   }
   if (value)
-    reg = reg | flag;
+    FLAG_SET_TRUE(flag);
   else
-    reg = reg & (~flag);
+    FLAG_SET_FALSE(flag);
+  return 0;
+}
+
+int sc_regGet(int flag, int *value) {
+  if (flag != FLAG_OVERFLOW && flag != FLAG_DIV_ZERO && flag != FLAG_MEM_OOB &&
+      flag != FLAG_INVALID_CMD && flag != FLAG_IGNORE_CLOCK) {
+    return -1;
+  }
+  if (value == NULL)
+    return -1;
+  *value = FLAG_GET(flag);
   return 0;
 }
