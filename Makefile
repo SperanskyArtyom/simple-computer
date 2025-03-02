@@ -1,9 +1,10 @@
 all:
-	echo "mop"
+	cd mySimpleComputer && $(MAKE)
 
 .PHONY: clean run all
 clean:
-	rm -rf */*.o
+	find . -name "*.o" -type f -delete
+	find . -name "*.a" -type f -delete
 
 run:
 	# Commands
