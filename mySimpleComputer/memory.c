@@ -23,7 +23,7 @@ int sc_memoryGet(int address, int *value) {
     return -1;
   if (value == NULL)
     return -1;
-  value = memory[address];
+  *value = memory[address];
   return 0;
 }
 
