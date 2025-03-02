@@ -7,6 +7,7 @@ int memory[128];
 int sc_memoryInit(void) {
   for (size_t i = 0; i < MEMORY_SIZE; i++)
     memory[i] = 0;
+  return 0;
 }
 
 int sc_memorySet(int address, int value) {
