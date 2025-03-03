@@ -33,3 +33,12 @@ void printDecodedCommand(int value) {
   for (int i = 14; i >= 0; i--)
     printf("%d", value & (1 << i) ? 1 : 0);
 }
+
+void printAccumulator(void) {
+  int value, sign, command, operand;
+  sc_accumulatorGet(&value);
+  sc_commandDecode(value, &sign, &command, &operand);
+
+  printf("sc: %c%X%X ", sign ? '+' : '-', command, operand);
+  printf("hex: %05X", value);
+}
