@@ -37,7 +37,7 @@ int sc_commandEncode(int sign, int command, int operand, int *value) {
 int sc_commandDecode(int value, int *sign, int *command, int *operand) {
   if (value < 0 || value > (1 << 15) - 1)
     return -1;
-  if (sign == NULL, command == NULL, operand == NULL)
+  if (sign == NULL || command == NULL || operand == NULL)
     return -1;
   *sign = *command = *operand = 0;
   int currentBit = 1;
