@@ -12,7 +12,8 @@ APP_OBJECTS = $(APP_SOURCES:$(APP_DIR)/%.c=$(APP_DIR)/%.o)
 LIB_SOURCES = $(wildcard $(LIB_DIR)/*.c)
 
 CC = gcc
-CFLAGS = -Wall -Wextra -I $(INCLUDE_DIR)
+CFLAGS = -Wall -Wextra -I $(INCLUDE_DIR) -MMD
+DEPS = $(APP_OBJECTS:.o=.d)
 
 all: $(APP_PATH)
 
@@ -25,10 +26,13 @@ $(APP_DIR)/%.o: $(APP_DIR)/%.c
 $(LIB_PATH): $(LIB_SOURCES)
 	cd mySimpleComputer && $(MAKE)
 
+-include $(DEPS)
+
 .PHONY: clean run all
 clean:
 	find . -name "*.o" -type f -delete
 	find . -name "*.a" -type f -delete
+	find . -name "*.d" -type f -delete
 
 run:
 	./$(APP_PATH)
