@@ -60,3 +60,9 @@ int sc_commandDecode(int value, int *sign, int *command, int *operand) {
   *sign = GET_BIT(value, currentBit++);
   return 0;
 }
+
+int sc_commandValidate(int command) {
+  if (command < 0 || command > (1 << 7) - 1)
+    return -1;
+  return 0;
+}
