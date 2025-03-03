@@ -29,8 +29,7 @@ void printFlags(void) {
 }
 
 void printDecodedCommand(int value) {
-  int sign, command, operand;
-  sc_commandDecode(value, &sign, &command, &operand);
-
-  printf("%c %X : %X", sign ? '+' : '-', command, operand);
+  printf("dec: %05d | oct: %05o | hex: %04X\tbin: ", value, value, value);
+  for (int i = 14; i >= 0; i--)
+    printf("%d", value & (1 << i) ? 1 : 0);
 }
