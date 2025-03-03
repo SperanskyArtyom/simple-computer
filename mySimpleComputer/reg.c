@@ -46,7 +46,7 @@ int sc_accumulatorInit(void) {
 }
 
 int sc_accumulatorSet(int value) {
-  if (value <= -(1 << 14) || value >= (1 << 14))
+  if (value < 0 || value > (1 << 15) - 1)
     return -1;
   accumulator = value;
   return 0;
@@ -65,7 +65,7 @@ int sc_icounterInit(void) {
 }
 
 int sc_icounterSet(int value) {
-  if (value <= -(1 << 14) || value >= (1 << 14))
+  if (value < 0 || value > (1 << 15) - 1)
     return -1;
   accumulator = value;
   return 0;
