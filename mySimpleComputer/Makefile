@@ -13,7 +13,7 @@ all: $(LIBRARY)
 $(LIBRARY): $(OBJECTS)
 	ar rcs $@ $^
 
-$(OBJECTS): $(SOURCES)
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: all
