@@ -6,11 +6,8 @@ void printCell(int address) {
   int value, sign, command, operand;
   sc_memoryGet(address, &value);
   sc_commandDecode(value, &sign, &command, &operand);
-  if (sign)
-    printf("+");
-  else
-    printf("-");
-  printf("%X%X", command, operand);
+
+  printf("%c%X%X", sign ? '+' : '-', command, operand);
 }
 
 void printFlags(void) {
@@ -29,4 +26,11 @@ void printFlags(void) {
 
   sc_regGet(FLAG_INVALID_CMD, &flag);
   printf("%c", flag ? 'E' : '_');
+}
+
+void printDecodedCommand(int value) {
+  int sign, command, operand;
+  sc_commandDecode(value, &sign, &command, &operand);
+
+  printf("%c %X : %X", sign ? '+' : '-', command, operand);
 }
