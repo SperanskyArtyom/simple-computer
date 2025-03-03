@@ -13,8 +13,8 @@ int sc_memorySave(char *filename);
 int sc_memoryLoad(char *filename);
 
 int sc_regInit(void);
-int sc_regSet(int register, int value);
-int sc_regGet(int register, int *value);
+int sc_regSet(int flag, int value);
+int sc_regGet(int flag, int *value);
 
 int sc_accumulatorInit(void);
 int sc_accumulatorSet(int value);
