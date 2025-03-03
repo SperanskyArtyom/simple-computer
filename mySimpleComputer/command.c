@@ -23,7 +23,7 @@ int sc_commandEncode(int sign, int command, int operand, int *value) {
       *value &= ~SET_MASK(currentBit++);
   }
   for (int i = 1; i < 8; i++) {
-    if (GET_BIT(operand, i))
+    if (GET_BIT(command, i))
       *value |= SET_MASK(currentBit++);
     else
       *value &= ~SET_MASK(currentBit++);
