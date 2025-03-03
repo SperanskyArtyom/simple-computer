@@ -16,28 +16,17 @@ void printCell(int address) {
 void printFlags(void) {
   int flag;
   sc_regGet(FLAG_OVERFLOW, &flag);
-  if (flag)
-    printf("P");
-  else
-    printf("_");
+  printf("%c", flag ? 'P' : '_');
+
   sc_regGet(FLAG_DIV_ZERO, &flag);
-  if (flag)
-    printf("0");
-  else
-    printf("_");
+  printf("%c", flag ? '0' : '_');
+
   sc_regGet(FLAG_MEM_OOB, &flag);
-  if (flag)
-    printf("M");
-  else
-    printf("_");
+  printf("%c", flag ? 'M' : '_');
+
   sc_regGet(FLAG_IGNORE_CLOCK, &flag);
-  if (flag)
-    printf("T");
-  else
-    printf("_");
+  printf("%c", flag ? 'T' : '_');
+
   sc_regGet(FLAG_INVALID_CMD, &flag);
-  if (flag)
-    printf("E");
-  else
-    printf("_");
+  printf("%c", flag ? 'E' : '_');
 }
