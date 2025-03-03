@@ -1,4 +1,6 @@
-#include "stddef.h"
+#include <mySimpleComputer.h>
+
+#include <stddef.h>
 
 #define FLAG_OVERFLOW 0
 #define FLAG_DIV_ZERO 1

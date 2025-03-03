@@ -1,4 +1,6 @@
-#include "stdio.h"
+#include <mySimpleComputer.h>
+
+#include <stdio.h>
 
 #define MEMORY_SIZE sizeof(memory) / sizeof(int)
 

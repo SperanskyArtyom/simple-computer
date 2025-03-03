@@ -1,4 +1,6 @@
-#include "stddef.h"
+#include <mySimpleComputer.h>
+
+#include <stddef.h>
 
 #define SET_MASK(k) 1 << (k - 1)
 #define GET_BIT(value, k) (value >> (k - 1)) & 0x1
