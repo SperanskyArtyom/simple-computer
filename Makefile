@@ -19,7 +19,7 @@ all: $(APP_PATH)
 $(APP_PATH): $(APP_OBJECTS) $(LIB_PATH)
 	$(CC) $(CFLAGS) $^ -o $@ 
 
-$(APP_OBJECTS): $(APP_SOURCES)
+$(APP_DIR)/%.o: $(APP_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIB_PATH): $(LIB_SOURCES)
