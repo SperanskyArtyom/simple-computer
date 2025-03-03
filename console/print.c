@@ -12,3 +12,32 @@ void printCell(int address) {
     printf("-");
   printf("%X%X", command, operand);
 }
+
+void printFlags(void) {
+  int flag;
+  sc_regGet(FLAG_OVERFLOW, &flag);
+  if (flag)
+    printf("P");
+  else
+    printf("_");
+  sc_regGet(FLAG_DIV_ZERO, &flag);
+  if (flag)
+    printf("0");
+  else
+    printf("_");
+  sc_regGet(FLAG_MEM_OOB, &flag);
+  if (flag)
+    printf("M");
+  else
+    printf("_");
+  sc_regGet(FLAG_IGNORE_CLOCK, &flag);
+  if (flag)
+    printf("T");
+  else
+    printf("_");
+  sc_regGet(FLAG_INVALID_CMD, &flag);
+  if (flag)
+    printf("E");
+  else
+    printf("_");
+}

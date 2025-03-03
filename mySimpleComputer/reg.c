@@ -2,11 +2,6 @@
 
 #include <stddef.h>
 
-#define FLAG_OVERFLOW 0
-#define FLAG_DIV_ZERO 1
-#define FLAG_MEM_OOB 2
-#define FLAG_INVALID_CMD 3
-#define FLAG_IGNORE_CLOCK 4
 #define FLAG_GET(flag) (reg >> flag) & 0x1
 #define FLAG_SET_TRUE(flag) reg = reg | (1 << flag)
 #define FLAG_SET_FALSE(flag) reg = reg & (~(1 << flag))

@@ -1,5 +1,11 @@
 #pragma once
 
+#define FLAG_OVERFLOW 0
+#define FLAG_DIV_ZERO 1
+#define FLAG_MEM_OOB 2
+#define FLAG_INVALID_CMD 3
+#define FLAG_IGNORE_CLOCK 4
+
 int sc_memoryInit(void);
 int sc_memorySet(int address, int value);
 int sc_memoryGet(int address, int *value);
