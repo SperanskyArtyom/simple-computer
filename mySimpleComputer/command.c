@@ -41,23 +41,9 @@ int sc_commandDecode(int value, int *sign, int *command, int *operand) {
     return -1;
   if (sign == NULL || command == NULL || operand == NULL)
     return -1;
-  *sign = *command = *operand = 0;
-  int currentBit = 1;
-  for (int i = 0; i < 8; i++) {
-    if (GET_BIT(value, currentBit++))
-      *operand |= SET_MASK(i);
-    else
-      *operand &= ~SET_MASK(i);
-  }
-
-  for (int i = 0; i < 8; i++) {
-    if (GET_BIT(value, currentBit++))
-      *command |= SET_MASK(i);
-    else
-      *command &= ~SET_MASK(i);
-  }
-
-  *sign = GET_BIT(value, currentBit++);
+  *operand = value & 0x7F;
+  *command = (value >> 7) & 0x7F;
+  *sign = (value >> 14) & 0x01;
   return 0;
 }
 

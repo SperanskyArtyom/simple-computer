@@ -7,7 +7,7 @@ void printCell(int address) {
   sc_memoryGet(address, &value);
   sc_commandDecode(value, &sign, &command, &operand);
 
-  printf("%c%X%X", sign ? '+' : '-', command, operand);
+  printf("%c%02X%02X", sign ? '-' : '+', command, operand);
 }
 
 void printFlags(void) {
