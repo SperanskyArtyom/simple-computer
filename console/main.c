@@ -36,11 +36,19 @@ int main() {
   sc_regSet(FLAG_INVALID_CMD, rand() % 2);
   sc_regSet(FLAG_IGNORE_CLOCK, rand() % 2);
 
-  printf("\nFlags: ");
+  printf("\nFlags:\t");
   printFlags();
 
   commandStatus = sc_regSet(10, 1);
   printf("\n\nStatus of sc_regSet with invalid flag: %d\n", commandStatus);
+
+  printf("\nAccumulator:\t");
+  sc_accumulatorSet(rand() % (1 << 15));
+  printAccumulator();
+
+  commandStatus = sc_accumulatorSet(1 << 15);
+  printf("\n\nStatus of sc_accumulatorSet with invalid value: %d\n",
+         commandStatus);
 
   return 0;
 }
