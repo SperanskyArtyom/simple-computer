@@ -57,5 +57,18 @@ int main() {
   printf("\n\nStatus of sc_icounterSet with invalid value: %d\n\n",
          commandStatus);
 
+  int sign, command, operand, value;
+  sc_memoryGet(0, &value);
+  printf("\nEncoded memory value: %d", value);
+  sc_commandDecode(value, &sign, &command, &operand);
+  printf("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
+         operand);
+
+  sc_accumulatorGet(&value);
+  printf("\nEncoded accumulator value: %d", value);
+  sc_commandDecode(value, &sign, &command, &operand);
+  printf("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
+         operand);
+
   return 0;
 }
