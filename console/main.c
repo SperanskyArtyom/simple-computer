@@ -11,7 +11,7 @@ int main() {
     int sc_icounterInit();
     int sc_regInit();
 
-    srand(time (NULL));
+    srand(time(NULL));
     int k = rand()%128+1;
     for(int i=0; i<k; i++){
         int value=rand()%(1 << 15);
@@ -24,5 +24,7 @@ int main() {
         }
         else printf(" ");
     }
+    int commandStatus = sc_memorySet(0,-1);
+    printf("\nStatus: %d", commandStatus);
     return 0; }
 
