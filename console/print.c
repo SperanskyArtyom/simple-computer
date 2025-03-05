@@ -39,8 +39,8 @@ void printAccumulator(void) {
   sc_accumulatorGet(&value);
   sc_commandDecode(value, &sign, &command, &operand);
 
-  printf("sc: %c%X%X ", sign ? '+' : '-', command, operand);
-  printf("hex: %05X", value);
+  printf("sc: %c%X%X ", sign ? '-' : '+', command, operand);
+  printf("hex: %04X", value);
 }
 
 void printCounters(void) {
@@ -48,5 +48,5 @@ void printCounters(void) {
   sc_icounterGet(&value);
   sc_commandDecode(value, &sign, &command, &operand);
 
-  printf("IC: %c%X%X", sign ? '+' : '-', command, operand);
+  printf("IC: %c%X%X", sign ? '-' : '+', command, operand);
 }
