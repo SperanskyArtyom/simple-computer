@@ -47,7 +47,14 @@ int main() {
   printAccumulator();
 
   commandStatus = sc_accumulatorSet(1 << 15);
-  printf("\n\nStatus of sc_accumulatorSet with invalid value: %d\n",
+  printf("\n\nStatus of sc_accumulatorSet with invalid value: %d\n\n",
+         commandStatus);
+
+  sc_icounterSet(15);
+  printCounters();
+
+  commandStatus = sc_icounterSet(-10);
+  printf("\n\nStatus of sc_icounterSet with invalid value: %d\n\n",
          commandStatus);
 
   return 0;
