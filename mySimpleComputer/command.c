@@ -14,25 +14,27 @@ int sc_commandEncode(int sign, int command, int operand, int *value) {
     return -1;
   if (value == NULL)
     return -1;
-  int currentBit = 1;
-
-  for (int i = 1; i < 8; i++) {
-    if (GET_BIT(operand, i))
-      *value |= SET_MASK(currentBit++);
-    else
-      *value &= ~SET_MASK(currentBit++);
-  }
-  for (int i = 1; i < 8; i++) {
-    if (GET_BIT(command, i))
-      *value |= SET_MASK(currentBit++);
-    else
-      *value &= ~SET_MASK(currentBit++);
-  }
+  int currentBit = 15;
 
   if (sign)
     *value |= SET_MASK(currentBit);
   else
     *value &= ~SET_MASK(currentBit);
+
+  for (int i = 7; i > 0; i--) {
+    if (GET_BIT(command, i))
+      *value |= SET_MASK(--currentBit);
+    else
+      *value &= ~SET_MASK(--currentBit);
+  }
+
+  for (int i = 7; i > 0; i--) {
+    if (GET_BIT(operand, i))
+      *value |= SET_MASK(--currentBit);
+    else
+      *value &= ~SET_MASK(--currentBit);
+  }
+
   return 0;
 }
 
