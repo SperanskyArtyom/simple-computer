@@ -70,5 +70,10 @@ int main() {
   printf("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
          operand);
 
+  sc_commandEncode(0, 0x1E, 10, &value);
+  printf("\nDecode of ADD 10 command:\n");
+  printDecodedCommand(value);
+  printf("\n");
+
   return 0;
 }
