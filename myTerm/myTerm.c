@@ -64,3 +64,19 @@ mt_setdefaultcolor (void)
   writeEscSeq (escapeSequence);
   return 0;
 }
+
+int
+mt_setcursorvisible (int value)
+{
+  if (value)
+    {
+      const char *escapeSequence = "\E[?12;25h";
+      writeEscSeq (escapeSequence);
+    }
+  else
+    {
+      const char *escapeSequence = "\E[?25l";
+      writeEscSeq (escapeSequence);
+    }
+  return 0;
+}
