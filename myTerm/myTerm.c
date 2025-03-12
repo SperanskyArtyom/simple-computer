@@ -80,3 +80,11 @@ mt_setcursorvisible (int value)
     }
   return 0;
 }
+
+int
+mt_delline (void)
+{
+  const char *escapeSequence = "\E[M";
+  writeEscSeq (escapeSequence);
+  return 0;
+}
