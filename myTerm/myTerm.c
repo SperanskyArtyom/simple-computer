@@ -38,3 +38,29 @@ mt_getscreensize (int *rows, int *cols)
   *cols = window.ws_col;
   return 0;
 }
+
+int
+mt_setfgcolor (enum colors color)
+{
+  char escapeSequence[20];
+  snprintf (escapeSequence, sizeof (escapeSequence), "\E[%dm", 30 + color);
+  writeEscSeq (escapeSequence);
+  return 0;
+}
+
+int
+mt_setbgcolor (enum colors color)
+{
+  char escapeSequence[20];
+  snprintf (escapeSequence, sizeof (escapeSequence), "\E[%dm", 40 + color);
+  writeEscSeq (escapeSequence);
+  return 0;
+}
+
+int
+mt_setdefaultcolor (void)
+{
+  const char *escapeSequence = "\E[%dm";
+  writeEscSeq (escapeSequence);
+  return 0;
+}
