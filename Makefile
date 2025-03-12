@@ -1,30 +1,37 @@
 APP_NAME = pr02
 
 APP_DIR = console
-LIB_DIR = mySimpleComputer
+MYSC_DIR = mySimpleComputer
+MYTERM_DIR = myTerm
 INCLUDE_DIR = include
 
 APP_PATH = $(APP_DIR)/$(APP_NAME)
-LIB_PATH = $(LIB_DIR)/libmy_sc.a
+MYSC_PATH = $(MYSC_DIR)/libmy_sc.a
+MYTERM_PATH = $(MYTERM_DIR)/libmyTerm.a
 
 APP_SOURCES = $(wildcard $(APP_DIR)/*.c)
 APP_OBJECTS = $(APP_SOURCES:$(APP_DIR)/%.c=$(APP_DIR)/%.o)
-LIB_SOURCES = $(wildcard $(LIB_DIR)/*.c)
+MYSC_SOURCES = $(wildcard $(MYSC_DIR)/*.c)
+MYTERM_SOURCES = $(wildcard $(MYTERM_DIR)/*.c)
 
 CC = gcc
 CFLAGS = -Wall -Wextra -I $(INCLUDE_DIR) -MMD
 DEPS = $(APP_OBJECTS:.o=.d)
+LIBS = $(MYSC_PATH) $(MYTERM_PATH)
 
 all: $(APP_PATH)
 
-$(APP_PATH): $(APP_OBJECTS) $(LIB_PATH)
+$(APP_PATH): $(APP_OBJECTS) $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@ 
 
 $(APP_DIR)/%.o: $(APP_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIB_PATH): $(LIB_SOURCES)
-	cd mySimpleComputer && $(MAKE)
+$(MYSC_PATH): $(MYSC_SOURCES)
+	cd $(MYSC_DIR) && $(MAKE)
+
+$(MYTERM_PATH): $(MYTERM_SOURCES)
+	cd $(MYTERM_DIR) && $(MAKE)
 
 -include $(DEPS)
 
