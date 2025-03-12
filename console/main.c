@@ -5,75 +5,80 @@
 #include <stdlib.h>
 #include <time.h>
 
-int main() {
-  int sc_memoryInit();
-  int sc_accumulatorInit();
-  int sc_icounterInit();
-  int sc_regInit();
+int
+main ()
+{
+  int sc_memoryInit ();
+  int sc_accumulatorInit ();
+  int sc_icounterInit ();
+  int sc_regInit ();
 
-  srand(time(NULL));
-  int k = rand() % 128 + 1;
-  for (int i = 0; i < k; i++) {
-    int value = rand() % (1 << 15);
-    sc_memorySet(i, value);
-  }
+  srand (time (NULL));
+  int k = rand () % 128 + 1;
+  for (int i = 0; i < k; i++)
+    {
+      int value = rand () % (1 << 15);
+      sc_memorySet (i, value);
+    }
 
-  printf("Memory:\n");
-  for (int i = 0; i < 128; i++) {
-    printCell(i);
-    if ((i + 1) % 10 == 0)
-      printf("\n");
-    else
-      printf(" ");
-  }
+  printf ("Memory:\n");
+  for (int i = 0; i < 128; i++)
+    {
+      printCell (i);
+      if ((i + 1) % 10 == 0)
+        printf ("\n");
+      else
+        printf (" ");
+    }
 
-  int commandStatus = sc_memorySet(0, -1);
-  printf("\n\nStatus of sc_memorySet with invalid value: %d\n", commandStatus);
+  int commandStatus = sc_memorySet (0, -1);
+  printf ("\n\nStatus of sc_memorySet with invalid value: %d\n",
+          commandStatus);
 
-  sc_regSet(FLAG_OVERFLOW, rand() % 2);
-  sc_regSet(FLAG_DIV_ZERO, rand() % 2);
-  sc_regSet(FLAG_MEM_OOB, rand() % 2);
-  sc_regSet(FLAG_INVALID_CMD, rand() % 2);
-  sc_regSet(FLAG_IGNORE_CLOCK, rand() % 2);
+  sc_regSet (FLAG_OVERFLOW, rand () % 2);
+  sc_regSet (FLAG_DIV_ZERO, rand () % 2);
+  sc_regSet (FLAG_MEM_OOB, rand () % 2);
+  sc_regSet (FLAG_INVALID_CMD, rand () % 2);
+  sc_regSet (FLAG_IGNORE_CLOCK, rand () % 2);
 
-  printf("\nFlags:\t");
-  printFlags();
+  printf ("\nFlags:\t");
+  printFlags ();
 
-  commandStatus = sc_regSet(10, 1);
-  printf("\n\nStatus of sc_regSet with invalid flag: %d\n", commandStatus);
+  commandStatus = sc_regSet (10, 1);
+  printf ("\n\nStatus of sc_regSet with invalid flag: %d\n", commandStatus);
 
-  printf("\nAccumulator:\t");
-  sc_accumulatorSet(rand() % (1 << 15));
-  printAccumulator();
+  printf ("\nAccumulator:\t");
+  sc_accumulatorSet (rand () % (1 << 15));
+  printAccumulator ();
 
-  commandStatus = sc_accumulatorSet(1 << 15);
-  printf("\n\nStatus of sc_accumulatorSet with invalid value: %d\n\n",
-         commandStatus);
+  commandStatus = sc_accumulatorSet (1 << 15);
+  printf ("\n\nStatus of sc_accumulatorSet with invalid value: %d\n\n",
+          commandStatus);
 
-  sc_icounterSet(15);
-  printCounters();
+  sc_icounterSet (15);
+  printCounters ();
 
-  commandStatus = sc_icounterSet(-10);
-  printf("\n\nStatus of sc_icounterSet with invalid value: %d\n\n",
-         commandStatus);
+  commandStatus = sc_icounterSet (-10);
+  printf ("\n\nStatus of sc_icounterSet with invalid value: %d\n\n",
+          commandStatus);
 
   int sign, command, operand, value;
-  sc_memoryGet(0, &value);
-  printf("\nEncoded memory value: %d", value);
-  sc_commandDecode(value, &sign, &command, &operand);
-  printf("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
-         operand);
+  sc_memoryGet (0, &value);
+  printf ("\nEncoded memory value: %d", value);
+  sc_commandDecode (value, &sign, &command, &operand);
+  printf ("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
+          operand);
 
-  sc_accumulatorGet(&value);
-  printf("\nEncoded accumulator value: %d", value);
-  sc_commandDecode(value, &sign, &command, &operand);
-  printf("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
-         operand);
+  sc_accumulatorGet (&value);
+  printf ("\nEncoded accumulator value: %d", value);
+  sc_commandDecode (value, &sign, &command, &operand);
+  printf ("\nDecoded: sign = %d, command = %d, operand = %d\n", sign, command,
+          operand);
 
-  sc_commandEncode(0, 0x1E, 10, &value);
-  printf("\nDecode of ADD 10 command:\n");
-  printDecodedCommand(value);
-  printf("\n");
+  sc_commandEncode (0, 0x1E, 10, &value);
+  printf ("\nDecode of ADD 10 command:\n");
+  printDecodedCommand (value);
+  printf ("\n");
 
   return 0;
 }
