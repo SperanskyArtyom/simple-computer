@@ -80,9 +80,9 @@ sc_icounterInit (void)
 int
 sc_icounterSet (int value)
 {
-  if (value < 0 || value > (1 << 15) - 1)
+  if (value < 0 || value > 128)
     return -1;
-  accumulator = value;
+  icounter = value;
   return 0;
 }
 
@@ -91,6 +91,6 @@ sc_icounterGet (int *value)
 {
   if (value == NULL)
     return -1;
-  *value = accumulator;
+  *value = icounter;
   return 0;
 }

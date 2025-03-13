@@ -2,6 +2,7 @@
 #include <mySimpleComputer.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -35,10 +36,45 @@ const int cashBlockY = editingCellBlockY + editingCellBlockHeight;
 const int cashBlockWidth = 11 * 6;
 const int cashBlockXHeight = 7;
 
-const int in_outBlockX = cashBlockX + cashBlockWidth;
-const int in_outBlockY = cashBlockY;
-const int in_outBlockWidth = 11;
-const int in_outBlockHeight = 7;
+const int inOutBlockX = cashBlockX + cashBlockWidth;
+const int inOutBlockY = cashBlockY;
+const int inOutBlockWidth = 11;
+const int inOutBlockHeight = 7;
+
+char *termHist[4] = { NULL };
+
+void
+shiftHist ()
+{
+  for (int i = 0; i < 3; i++)
+    termHist[i] = termHist[i + 1];
+  termHist[3] = malloc (sizeof (char[20]));
+}
+
+void
+appendToHist (int address, int input)
+{
+  char buffer[20];
+  int value, sign, command, operand;
+  sc_memoryGet (address, &value);
+  sc_commandDecode (value, &sign, &command, &operand);
+  snprintf (buffer, sizeof (buffer), "%02d%c %c%02X%02X", address,
+            input ? '>' : '<', sign ? '-' : '+', command, operand);
+
+  int i;
+  for (i = 0; i < 4; i++)
+    if (termHist[i] == NULL)
+      {
+        termHist[i] = malloc (sizeof (char[20]));
+        break;
+      }
+  if (i == 4)
+    {
+      shiftHist ();
+      i--;
+    }
+  strcpy (termHist[i], buffer);
+}
 
 void
 printCell (int address, enum colors fg, enum colors bg)
@@ -134,5 +170,39 @@ printCounters (void)
   mt_gotoXY (icounterBlockX + icounterBlockWidth / 2, icounterBlockY + 1);
   snprintf (buffer, sizeof (buffer), "IC: %c%02X%02X", sign ? '-' : '+',
             command, operand);
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+}
+
+int
+printTermHist ()
+{
+  int i;
+  for (i = 0; i < 4; i++)
+    {
+      if (termHist[i] == NULL)
+        break;
+      mt_gotoXY (inOutBlockX + 1, inOutBlockY + i + 1);
+      write (STDOUT_FILENO, termHist[i], strlen (termHist[i]));
+    }
+  return i;
+}
+
+void
+printTerm (int address, int input)
+{
+  int i = printTermHist ();
+  char buffer[20];
+  if (input)
+    snprintf (buffer, sizeof (buffer), "%02d> ", address);
+  else
+    {
+      int value, sign, command, operand;
+      sc_memoryGet (address, &value);
+      sc_commandDecode (value, &sign, &command, &operand);
+      snprintf (buffer, sizeof (buffer), "%02d< %c%02X%02X", address,
+                sign ? '-' : '+', command, operand);
+    }
+
+  mt_gotoXY (inOutBlockX + 1, inOutBlockY + i + 1);
   write (STDOUT_FILENO, buffer, strlen (buffer));
 }

@@ -10,6 +10,9 @@
 int
 main ()
 {
+  int winX, winY;
+  mt_getscreensize (&winX, &winY);
+
   sc_memoryInit ();
   sc_accumulatorInit ();
   sc_icounterInit ();
@@ -38,7 +41,15 @@ main ()
   sc_memoryGet (editingCellAdress, &editingCellValue);
   printDecodedCommand (editingCellValue);
 
-  mt_gotoXY (1, 20);
-  mt_delline ();
+  mt_setcursorvisible (0);
+  for (int i = 0; i < 7; i++)
+    {
+      printTerm (i, 0);
+      appendToHist (i, 0);
+      sleep (1);
+    }
+
+  mt_setcursorvisible (1);
+  write (STDOUT_FILENO, "\n", 2);
   return 0;
 }
