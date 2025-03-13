@@ -1,15 +1,30 @@
 #include "console.h"
 #include <mySimpleComputer.h>
+
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+const int memoryBlockX = 1;
+const int memoryBlockY = 1;
 
 void
-printCell (int address)
+printCell (int address, enum colors fg, enum colors bg)
 {
   int value, sign, command, operand;
   sc_memoryGet (address, &value);
   sc_commandDecode (value, &sign, &command, &operand);
 
-  printf ("%c%02X%02X", sign ? '-' : '+', command, operand);
+  int x = (address % 10) * 6 + 1 + memoryBlockX;
+  int y = address / 10 + 1 + memoryBlockY;
+
+  mt_setfgcolor (fg);
+  mt_setbgcolor (bg);
+  mt_gotoXY (x, y);
+
+  char bufer[20];
+  snprintf (bufer, 20, "%c%02X%02X", sign ? '-' : '+', command, operand);
+  write (STDOUT_FILENO, bufer, strlen (bufer));
 }
 
 void

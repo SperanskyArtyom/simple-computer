@@ -8,7 +8,7 @@
 void
 writeEscSeq (const char *escSeq)
 {
-  write (STDOUT_FILENO, escSeq, sizeof (escSeq));
+  write (STDOUT_FILENO, escSeq, strlen (escSeq));
 }
 
 int
