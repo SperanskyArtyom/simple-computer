@@ -12,7 +12,7 @@ int
 sc_regInit (void)
 {
   reg = 0;
-  FLAG_SET_TRUE (FLAG_IGNORE_CLOCK);
+  sc_regSet (FLAG_IGNORE_CLOCK, 1);
   return 0;
 }
 
