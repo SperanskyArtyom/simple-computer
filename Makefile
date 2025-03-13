@@ -1,4 +1,4 @@
-APP_NAME = pr02
+APP_NAME = console
 
 APP_DIR = console
 MYSC_DIR = mySimpleComputer

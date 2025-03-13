@@ -10,8 +10,23 @@
 int
 main ()
 {
+
+  if (!isatty (fileno (stdout)))
+    {
+      fprintf (stderr,
+               "Ошибка: стандартный поток вывода не является терминалом.\n");
+      exit (1);
+    }
+
   int winX, winY;
-  mt_getscreensize (&winX, &winY);
+  mt_getscreensize (&winY, &winX);
+  if (winX < 103 || winY < 26)
+    {
+      fprintf (stderr, "Ошибка: размер окна терминал слишком мал.\n");
+      exit (1);
+    }
+
+  mt_clrscr ();
 
   sc_memoryInit ();
   sc_accumulatorInit ();
@@ -20,23 +35,27 @@ main ()
   int editingCellAdress = 0, editingCellValue;
 
   srand (time (NULL));
-  int k = rand () % 128 + 1;
-  for (int i = 0; i < k; i++)
+  for (int i = 0; i < 12; i++)
     {
       int value = rand () % (1 << 15);
       sc_memorySet (i, value);
     }
 
-  mt_clrscr ();
+  int value;
+  sc_commandEncode (1, 0x00, 1, &value);
+  sc_memorySet (12, value);
+  sc_icounterSet (12);
+
   for (int i = 0; i < 128; i++)
     if (i == editingCellAdress)
       printCell (i, BLACK, WHITE);
     else
       printCell (i, WHITE, BLACK);
 
-  printFlags ();
   printAccumulator ();
+  printFlags ();
   printCounters ();
+  printCommand ();
 
   sc_memoryGet (editingCellAdress, &editingCellValue);
   printDecodedCommand (editingCellValue);

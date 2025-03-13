@@ -106,28 +106,28 @@ void
 printFlags (void)
 {
   int flag;
-  const int flagX = flagsBlockX + (flagsBlockWidth - (5 * 2)) / 2;
+  const int flagX = flagsBlockX + (flagsBlockWidth - (4 * 3 + 1)) / 2;
   char buffer[5];
   mt_gotoXY (flagX, flagsBlockY + 1);
 
   sc_regGet (FLAG_OVERFLOW, &flag);
-  snprintf (buffer, sizeof (buffer), "%c ", flag ? 'P' : '_');
+  snprintf (buffer, sizeof (buffer), "%c  ", flag ? 'P' : '_');
   write (STDOUT_FILENO, buffer, strlen (buffer));
 
   sc_regGet (FLAG_DIV_ZERO, &flag);
-  snprintf (buffer, sizeof (buffer), "%c ", flag ? '0' : '_');
+  snprintf (buffer, sizeof (buffer), "%c  ", flag ? '0' : '_');
   write (STDOUT_FILENO, buffer, strlen (buffer));
 
   sc_regGet (FLAG_MEM_OOB, &flag);
-  snprintf (buffer, sizeof (buffer), "%c ", flag ? 'M' : '_');
+  snprintf (buffer, sizeof (buffer), "%c  ", flag ? 'M' : '_');
   write (STDOUT_FILENO, buffer, strlen (buffer));
 
   sc_regGet (FLAG_IGNORE_CLOCK, &flag);
-  snprintf (buffer, sizeof (buffer), "%c ", flag ? 'T' : '_');
+  snprintf (buffer, sizeof (buffer), "%c  ", flag ? 'T' : '_');
   write (STDOUT_FILENO, buffer, strlen (buffer));
 
   sc_regGet (FLAG_INVALID_CMD, &flag);
-  snprintf (buffer, sizeof (buffer), "%c ", flag ? 'E' : '_');
+  snprintf (buffer, sizeof (buffer), "%c  ", flag ? 'E' : '_');
   write (STDOUT_FILENO, buffer, strlen (buffer));
 }
 
