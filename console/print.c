@@ -26,6 +26,11 @@ const int icounterBlockY = accumulatorBlockY + accumulatorBlockHeight;
 const int icounterBlockWidth = accumulatorBlockWidth;
 const int icounterBlockHeight = accumulatorBlockHeight;
 
+const int commandBlockX = flagsBlockX;
+const int commandBlockY = icounterBlockY;
+const int commandBlockWidth = accumulatorBlockWidth;
+const int commandBlockHeight = accumulatorBlockHeight;
+
 const int editingCellBlockX = 1;
 const int editingCellBlockY = memoryBlockY + memoryBlockHeight;
 const int editingCellBlockWidth = memoryBlockWidth;
@@ -204,5 +209,30 @@ printTerm (int address, int input)
     }
 
   mt_gotoXY (inOutBlockX + 1, inOutBlockY + i + 1);
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+}
+
+void
+printCommand (void)
+{
+  int commandAddress, value, sign, command, operand;
+  sc_icounterGet (&commandAddress);
+  sc_memoryGet (commandAddress, &value);
+  sc_commandDecode (value, &sign, &command, &operand);
+
+  char buffer[20];
+  int commandTextX;
+
+  if (sign || sc_commandValidate (command))
+    {
+      commandTextX = commandBlockX + commandBlockWidth / 2;
+      strcpy (buffer, "!");
+    }
+  else
+    {
+      commandTextX = commandBlockX + (commandBlockWidth - 9) / 2;
+      snprintf (buffer, sizeof (buffer), "+ %02X : %02X", command, operand);
+    }
+  mt_gotoXY (commandTextX, commandBlockY + 1);
   write (STDOUT_FILENO, buffer, strlen (buffer));
 }

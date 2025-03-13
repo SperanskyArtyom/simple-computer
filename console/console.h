@@ -8,5 +8,6 @@ void printDecodedCommand (int value);
 void printAccumulator (void);
 void printCounters (void);
 void printTerm (int address, int input);
+void printCommand (void);
 
 void appendToHist (int address, int input);
