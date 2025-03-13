@@ -12,16 +12,33 @@ const int memoryBlockHeight = 15;
 
 const int accumulatorBlockX = memoryBlockX + memoryBlockWidth;
 const int accumulatorBlockY = 1;
-const int accumulatorWidth = 23;
+const int accumulatorBlockWidth = 21;
+const int accumulatorBlockHeight = 3;
 
-const int flagsBlockX = accumulatorBlockX + accumulatorWidth;
+const int flagsBlockX = accumulatorBlockX + accumulatorBlockWidth;
 const int flagsBlockY = 1;
-const int flagsBlockWidth = 23;
+const int flagsBlockWidth = accumulatorBlockWidth;
+const int flagsBlockHeight = accumulatorBlockHeight;
+
+const int icounterBlockX = accumulatorBlockX;
+const int icounterBlockY = accumulatorBlockY + accumulatorBlockHeight;
+const int icounterBlockWidth = accumulatorBlockWidth;
+const int icounterBlockHeight = accumulatorBlockHeight;
 
 const int editingCellBlockX = 1;
 const int editingCellBlockY = memoryBlockY + memoryBlockHeight;
 const int editingCellBlockWidth = memoryBlockWidth;
 const int editingCellBlockHeight = 3;
+
+const int cashBlockX = 1;
+const int cashBlockY = editingCellBlockY + editingCellBlockHeight;
+const int cashBlockWidth = 11 * 6;
+const int cashBlockXHeight = 7;
+
+const int in_outBlockX = cashBlockX + cashBlockWidth;
+const int in_outBlockY = cashBlockY;
+const int in_outBlockWidth = 11;
+const int in_outBlockHeight = 7;
 
 void
 printCell (int address, enum colors fg, enum colors bg)
@@ -48,7 +65,7 @@ void
 printFlags (void)
 {
   int flag;
-  const int flagX = flagsBlockX + (flagsBlockWidth / -(5 * 2)) / 2;
+  const int flagX = flagsBlockX + (flagsBlockWidth - (5 * 2)) / 2;
   char buffer[5];
   mt_gotoXY (flagX, flagsBlockY + 1);
 
@@ -96,8 +113,14 @@ printAccumulator (void)
   sc_accumulatorGet (&value);
   sc_commandDecode (value, &sign, &command, &operand);
 
-  printf ("sc: %c%X%X ", sign ? '-' : '+', command, operand);
-  printf ("hex: %04X", value);
+  char buffer[20];
+  mt_gotoXY (accumulatorBlockX + 2, accumulatorBlockY + 1);
+
+  snprintf (buffer, sizeof (buffer), "sc: %c%X%X ", sign ? '-' : '+', command,
+            operand);
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+  snprintf (buffer, sizeof (buffer), "hex: %04X", value);
+  write (STDOUT_FILENO, buffer, strlen (buffer));
 }
 
 void
@@ -107,5 +130,9 @@ printCounters (void)
   sc_icounterGet (&value);
   sc_commandDecode (value, &sign, &command, &operand);
 
-  printf ("IC: %c%X%X", sign ? '-' : '+', command, operand);
+  char buffer[20];
+  mt_gotoXY (icounterBlockX + icounterBlockWidth / 2, icounterBlockY + 1);
+  snprintf (buffer, sizeof (buffer), "IC: %c%02X%02X", sign ? '-' : '+',
+            command, operand);
+  write (STDOUT_FILENO, buffer, strlen (buffer));
 }

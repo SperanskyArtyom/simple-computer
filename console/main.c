@@ -32,6 +32,8 @@ main ()
       printCell (i, WHITE, BLACK);
 
   printFlags ();
+  printAccumulator ();
+  printCounters ();
 
   sc_memoryGet (editingCellAdress, &editingCellValue);
   printDecodedCommand (editingCellValue);
