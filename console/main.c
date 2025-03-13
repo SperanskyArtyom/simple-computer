@@ -42,7 +42,7 @@ main ()
     }
 
   int value;
-  sc_commandEncode (1, 0x00, 1, &value);
+  sc_commandEncode (0, 0x00, 1, &value);
   sc_memorySet (12, value);
   sc_icounterSet (12);
 
@@ -69,6 +69,7 @@ main ()
     }
 
   mt_setcursorvisible (1);
-  write (STDOUT_FILENO, "\n", 2);
+  mt_gotoXY (winX, winY);
+  mt_delline ();
   return 0;
 }
