@@ -60,7 +60,7 @@ mt_setbgcolor (enum colors color)
 int
 mt_setdefaultcolor (void)
 {
-  const char *escapeSequence = "\E[%dm";
+  const char *escapeSequence = "\E[0m";
   writeEscSeq (escapeSequence);
   return 0;
 }

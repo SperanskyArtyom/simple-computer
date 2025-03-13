@@ -8,6 +8,7 @@
 const int memoryBlockX = 1;
 const int memoryBlockY = 1;
 const int memoryBlockWidth = 10 * 6 + 1;
+const int memoryBlockHeight = 15;
 
 const int accumulatorBlockX = memoryBlockX + memoryBlockWidth;
 const int accumulatorBlockY = 1;
@@ -16,6 +17,11 @@ const int accumulatorWidth = 23;
 const int flagsBlockX = accumulatorBlockX + accumulatorWidth;
 const int flagsBlockY = 1;
 const int flagsBlockWidth = 23;
+
+const int editingCellBlockX = 1;
+const int editingCellBlockY = memoryBlockY + memoryBlockHeight;
+const int editingCellBlockWidth = memoryBlockWidth;
+const int editingCellBlockHeight = 3;
 
 void
 printCell (int address, enum colors fg, enum colors bg)
@@ -35,6 +41,7 @@ printCell (int address, enum colors fg, enum colors bg)
   snprintf (buffer, sizeof (buffer), "%c%02X%02X", sign ? '-' : '+', command,
             operand);
   write (STDOUT_FILENO, buffer, strlen (buffer));
+  mt_setdefaultcolor ();
 }
 
 void
@@ -69,9 +76,17 @@ printFlags (void)
 void
 printDecodedCommand (int value)
 {
-  printf ("dec: %05d | oct: %05o | hex: %04X\tbin: ", value, value, value);
+  char buffer[50];
+
+  mt_gotoXY (editingCellBlockX + 1, editingCellBlockY + 1);
+  snprintf (buffer, sizeof (buffer),
+            "dec: %05d | oct: %05o | hex: %04X\tbin: ", value, value, value);
+  write (STDOUT_FILENO, buffer, strlen (buffer));
   for (int i = 14; i >= 0; i--)
-    printf ("%d", value & (1 << i) ? 1 : 0);
+    {
+      snprintf (buffer, sizeof (buffer), "%d", value & (1 << i) ? 1 : 0);
+      write (STDOUT_FILENO, buffer, strlen (buffer));
+    }
 }
 
 void
