@@ -87,16 +87,6 @@ printCell (int address, enum colors fg, enum colors bg)
   int value, sign, command, operand;
   sc_memoryGet (address, &value);
   sc_commandDecode (value, &sign, &command, &operand);
-  if (sign)
-    {
-      command = ~command & 0x7F;
-      operand = ~operand & 0x7F;
-      if (operand++ == 0x7F)
-        {
-          command++;
-          operand = 0;
-        }
-    }
 
   int x = (address % 10) * 6 + 1 + memoryBlockX;
   int y = address / 10 + 1 + memoryBlockY;
@@ -147,8 +137,14 @@ printDecodedCommand (int value)
   char buffer[50];
 
   mt_gotoXY (editingCellBlockX + 1, editingCellBlockY + 1);
+  int decValue;
+  if ((value >> 14) & 0x1)
+    {
+      decValue = -((~value & 0x3FFF) + 1);
+    }
   snprintf (buffer, sizeof (buffer),
-            "dec: %05d | oct: %05o | hex: %04X\tbin: ", value, value, value);
+            "dec: %05d | oct: %05o | hex: %04X\tbin: ", decValue, value,
+            value);
   write (STDOUT_FILENO, buffer, strlen (buffer));
   for (int i = 14; i >= 0; i--)
     {

@@ -40,12 +40,12 @@ main ()
       int value = rand () % (1 << 15);
       sc_memorySet (i, value);
     }
-  sc_memorySet (0, (1 << 14));
+  sc_memorySet (0, 0x7FFD);
 
   int value;
   sc_commandEncode (0, 0x00, 1, &value);
   sc_memorySet (12, value);
-  sc_icounterSet (12);
+  sc_icounterSet (1);
 
   for (int i = 0; i < 128; i++)
     if (i == editingCellAdress)
