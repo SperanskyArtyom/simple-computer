@@ -40,7 +40,7 @@ main ()
       int value = rand () % (1 << 15);
       sc_memorySet (i, value);
     }
-  sc_memorySet (0, (1 << 15) - 1);
+  sc_memorySet (0, (1 << 14));
 
   int value;
   sc_commandEncode (0, 0x00, 1, &value);

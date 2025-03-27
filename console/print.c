@@ -91,7 +91,11 @@ printCell (int address, enum colors fg, enum colors bg)
     {
       command = ~command & 0x7F;
       operand = ~operand & 0x7F;
-      operand == 0x7F ? command++ : operand++;
+      if (operand++ == 0x7F)
+        {
+          command++;
+          operand = 0;
+        }
     }
 
   int x = (address % 10) * 6 + 1 + memoryBlockX;
