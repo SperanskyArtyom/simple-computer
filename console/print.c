@@ -87,6 +87,12 @@ printCell (int address, enum colors fg, enum colors bg)
   int value, sign, command, operand;
   sc_memoryGet (address, &value);
   sc_commandDecode (value, &sign, &command, &operand);
+  if (sign)
+    {
+      command = ~command & 0x7F;
+      operand = ~operand & 0x7F;
+      operand == 0x7F ? command++ : operand++;
+    }
 
   int x = (address % 10) * 6 + 1 + memoryBlockX;
   int y = address / 10 + 1 + memoryBlockY;
