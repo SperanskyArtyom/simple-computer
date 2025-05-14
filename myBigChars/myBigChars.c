@@ -166,3 +166,49 @@ bc_printbigchar (int big[2], int x, int y, enum colors fg, enum colors bg)
 
   return 0;
 }
+
+int
+bc_bigcharwrite (int fd, int *big, int count)
+{
+  if (big == NULL)
+    return -1;
+  if (fd < 0 || count <= 0)
+    return -1;
+
+  for (int i = 0; i < count; i++)
+    {
+      if (write (fd, &big[i * 2], sizeof (int) * 2) != sizeof (int) * 2)
+        {
+          return -1;
+        }
+    }
+
+  return 0;
+}
+
+int
+bc_bigcharread (int fd, int *big, int need_count, int *count)
+{
+  if (big == NULL)
+    return -1;
+  if (count == NULL)
+    return -1;
+  if (fd < 0 || need_count <= 0)
+    return -1;
+
+  *count = 0;
+
+  for (int i = 0; i < need_count; i++)
+    {
+      ssize_t bytes_read = read (fd, &big[i * 2], sizeof (int) * 2);
+
+      if (bytes_read == 0)
+        break;
+      if (bytes_read != sizeof (int) * 2)
+        return -1;
+
+      (*count)++;
+    }
+
+  return (*count > 0) ? 0 : -1;
+}
