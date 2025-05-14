@@ -6,6 +6,10 @@ cursor_invisible    = "\E[?25l"
 cursor_visible      = "\E[?12;25h"
 delete_line         = "\E[M"
 
+enter_alt_charset_mode  = "\E(0"
+exit_alt_charset_mode   = "\E(B"
+acs_chars               = ``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~
+
 n - номер цвета
 0       1       2       3       4       5           6       7
 Black 	Red 	Green 	Yellow 	Blue 	Magenta 	Cyan 	White 
