@@ -142,6 +142,8 @@ printDecodedCommand (int value)
     {
       decValue = -((~value & 0x3FFF) + 1);
     }
+  else
+    decValue = value;
   snprintf (buffer, sizeof (buffer),
             "dec: %05d | oct: %05o | hex: %04X\tbin: ", decValue, value,
             value);
@@ -227,18 +229,15 @@ printCommand (void)
   sc_commandDecode (value, &sign, &command, &operand);
 
   char buffer[20];
-  int commandTextX;
+  int commandTextX = commandBlockX + (commandBlockWidth - 9) / 2;
+  mt_gotoXY (commandTextX, commandBlockY + 1);
 
   if (sign || sc_commandValidate (command))
-    {
-      commandTextX = commandBlockX + commandBlockWidth / 2;
-      strcpy (buffer, "!");
-    }
+    write (STDOUT_FILENO, "!", 1);
   else
-    {
-      commandTextX = commandBlockX + (commandBlockWidth - 9) / 2;
-      snprintf (buffer, sizeof (buffer), "+ %02X : %02X", command, operand);
-    }
-  mt_gotoXY (commandTextX, commandBlockY + 1);
+    write (STDOUT_FILENO, "+", 1);
+
+  snprintf (buffer, sizeof (buffer), " %02X : %02X", command, operand);
+
   write (STDOUT_FILENO, buffer, strlen (buffer));
 }
