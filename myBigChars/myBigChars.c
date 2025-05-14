@@ -139,3 +139,30 @@ bc_getbigcharpos (int *big, int x, int y, int *value)
 
   return 0;
 }
+
+int
+bc_printbigchar (int big[2], int x, int y, enum colors fg, enum colors bg)
+{
+  if (big == NULL)
+    return -1;
+
+  mt_setfgcolor (fg);
+  mt_setbgcolor (bg);
+
+  write (STDOUT_FILENO, "\E(0", 3);
+  for (int i = 0; i < 8; i++)
+    {
+      int value;
+      mt_gotoXY (y, x + i);
+      for (int j = 0; j < 8; j++)
+        {
+          if (bc_getbigcharpos (big, i, j, &value))
+            return -1;
+          write (STDOUT_FILENO, value ? "a" : " ", 1);
+        }
+    }
+  write (STDOUT_FILENO, "\E(B", 3);
+  mt_setdefaultcolor ();
+
+  return 0;
+}
