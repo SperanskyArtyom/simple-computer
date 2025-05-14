@@ -17,16 +17,12 @@ bc_strlen (const char *str)
       char c = *p;
 
       if (c <= 0x7F) // Однобайтовый символ
-        {
-          p++;
-        }
+        p++;
 
       else if ((c & 0xE0) == 0xC0) // Двухбайтовый символ: 110xxxxx
         {
           if ((p[1] & 0xC0) != 0x80) // Некорректный следующая байт
-            {
-              return 0;
-            }
+            return 0;
           p += 2;
         }
 
@@ -34,9 +30,7 @@ bc_strlen (const char *str)
         {
           if ((p[1] & 0xC0) != 0x80
               || (p[2] & 0xC0) != 0x80) // Некорректный следующий байт
-            {
-              return 0;
-            }
+            return 0;
           p += 3;
         }
 
@@ -44,16 +38,12 @@ bc_strlen (const char *str)
         {
           if ((p[1] & 0xC0) != 0x80 || (p[2] & 0xC0) != 0x80
               || (p[3] & 0xC0) != 0x80) // Некорректный следующий байт
-            {
-              return 0;
-            }
+            return 0;
           p += 4;
         }
 
       else // Недопустимый первый байт
-        {
-          return 0;
-        }
+        return 0;
 
       count++;
     }
@@ -114,5 +104,43 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
     }
 
   mt_setdefaultcolor ();
+
+  return 0;
+}
+
+int
+bc_setbigcharpos (int *big, int x, int y, int value)
+{
+  if (big == NULL)
+    return -1;
+  if (x < 0 || x > 7 || y < 0 || y > 7)
+    return -1;
+
+  int index = x / 4;
+  int bit = (x % 4) * 8 + y;
+
+  if (value)
+    big[index] |= (1 << bit);
+  else
+    big[index] &= ~(1 << bit);
+
+  return 0;
+}
+
+int
+bc_getbigcharpos (int *big, int x, int y, int *value)
+{
+  if (big == NULL)
+    return -1;
+  if (value == NULL)
+    return -1;
+  if (x < 0 || x > 7 || y < 0 || y > 7)
+    return -1;
+
+  int index = x / 4;
+  int bit = (x % 4) * 8 + y;
+
+  *value = (big[index] >> bit) & 0x1;
+
   return 0;
 }
