@@ -11,42 +11,41 @@ bc_strlen (const char *str)
     return 0;
 
   int count = 0;
-  const char *p = str;
+  const unsigned char *p = (const unsigned char *)str;
 
   while (*p != '\0')
     {
-      char c = *p;
-
-      if (c <= 0x7F) // Однобайтовый символ
-        p++;
-
-      else if ((c & 0xE0) == 0xC0) // Двухбайтовый символ: 110xxxxx
+      if (*p <= 0x7F) // Однобайтовый символ
         {
-          if ((p[1] & 0xC0) != 0x80) // Некорректный следующая байт
+          p++;
+          count++;
+        }
+      else if ((p[0] & 0xE0) == 0xC0) // Двухбайтовый символ
+        {
+          if ((p[1] & 0xC0) != 0x80) // Некорректный следующий байт
             return 0;
           p += 2;
+          count++;
         }
-
-      else if ((c & 0xF0) == 0xE0) // Трехбайтовый символ: 1110xxxx
+      else if ((p[0] & 0xF0) == 0xE0) // Трехбайтовый символ
         {
-          if ((p[1] & 0xC0) != 0x80
-              || (p[2] & 0xC0) != 0x80) // Некорректный следующий байт
+          if ((p[1] & 0xC0) != 0x80 || (p[2] & 0xC0) != 0x80)
             return 0;
           p += 3;
+          count++;
         }
-
-      else if ((c & 0xF8) == 0xF0) // Четырехбайтовый символ: 11110xxx
+      else if ((p[0] & 0xF8) == 0xF0) // Четырехбайтовый символ
         {
           if ((p[1] & 0xC0) != 0x80 || (p[2] & 0xC0) != 0x80
-              || (p[3] & 0xC0) != 0x80) // Некорректный следующий байт
+              || (p[3] & 0xC0) != 0x80)
             return 0;
           p += 4;
+          count++;
         }
-
       else // Недопустимый первый байт
-        return 0;
-
-      count++;
+        {
+          return 0;
+        }
     }
 
   return count;
@@ -105,8 +104,10 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
     {
       mt_setfgcolor (header_fg);
       mt_setbgcolor (header_bg);
-      mt_gotoXY (y1 + (y2 - headerLen) / 2, x1);
-      write (STDOUT_FILENO, header, headerLen);
+      mt_gotoXY (y1 + (y2 - headerLen - 2) / 2, x1);
+      write (STDOUT_FILENO, " ", 1);
+      write (STDOUT_FILENO, header, strlen (header));
+      write (STDOUT_FILENO, " ", 1);
     }
 
   mt_setdefaultcolor ();
