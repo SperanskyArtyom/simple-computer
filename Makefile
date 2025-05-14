@@ -3,21 +3,24 @@ APP_NAME = console
 APP_DIR = console
 MYSC_DIR = mySimpleComputer
 MYTERM_DIR = myTerm
+MYBC_DIR = myBigChars
 INCLUDE_DIR = include
 
 APP_PATH = $(APP_DIR)/$(APP_NAME)
 MYSC_PATH = $(MYSC_DIR)/libmy_sc.a
 MYTERM_PATH = $(MYTERM_DIR)/libmyTerm.a
+MYBC_PATH = $(MYBC_DIR)/libmy_bc.a
 
 APP_SOURCES = $(wildcard $(APP_DIR)/*.c)
 APP_OBJECTS = $(APP_SOURCES:$(APP_DIR)/%.c=$(APP_DIR)/%.o)
 MYSC_SOURCES = $(wildcard $(MYSC_DIR)/*.c)
 MYTERM_SOURCES = $(wildcard $(MYTERM_DIR)/*.c)
+MYBC_SOURCES = $(wildcard $(MYBC_DIR)/*.c)
 
 CC = gcc
 CFLAGS = -Wall -Wextra -I $(INCLUDE_DIR) -MMD
 DEPS = $(APP_OBJECTS:.o=.d)
-LIBS = $(MYSC_PATH) $(MYTERM_PATH)
+LIBS = $(MYSC_PATH) $(MYTERM_PATH) $(MYBC_PATH)
 
 all: $(APP_PATH)
 
@@ -32,6 +35,9 @@ $(MYSC_PATH): $(MYSC_SOURCES)
 
 $(MYTERM_PATH): $(MYTERM_SOURCES)
 	cd $(MYTERM_DIR) && $(MAKE)
+
+$(MYBC_PATH): $(MYBC_SOURCES)
+	cd $(MYBC_DIR) && $(MAKE)
 
 -include $(DEPS)
 
