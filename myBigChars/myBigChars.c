@@ -55,17 +55,14 @@ int
 bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
         char *header, enum colors header_fg, enum colors header_bg)
 {
-  char buffer[100];
-  int bufferLen;
-
   mt_setfgcolor (box_fg);
   mt_setbgcolor (box_bg);
 
   write (STDOUT_FILENO, "\E(0", 3);
 
   // draw top border
-  bufferLen = snprintf (buffer, sizeof (buffer), "\E[%d;%dHl", x1, y1);
-  write (STDOUT_FILENO, buffer, bufferLen);
+  mt_gotoXY (y1, x1);
+  write (STDOUT_FILENO, "l", 1);
   for (int i = 1; i < y2 - 1; i++)
     {
       write (STDOUT_FILENO, "q", 1);
@@ -75,17 +72,15 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
   // draw side borders
   for (int i = 1; i < x2 - 1; i++)
     {
-      bufferLen = snprintf (buffer, sizeof (buffer), "\E[%d;%dHx", x1 + i, y1);
-      write (STDOUT_FILENO, buffer, bufferLen);
-      bufferLen = snprintf (buffer, sizeof (buffer), "\E[%d;%dHx", x1 + i,
-                            y1 + y2 - 1);
-      write (STDOUT_FILENO, buffer, bufferLen);
+      mt_gotoXY (y1, x1 + i);
+      write (STDOUT_FILENO, "x", 1);
+      mt_gotoXY (y1 + y2 - 1, x1 + i);
+      write (STDOUT_FILENO, "x", 1);
     }
 
   // draw bottom border
-  bufferLen
-      = snprintf (buffer, sizeof (buffer), "\E[%d;%dHm", x1 + x2 - 1, y1);
-  write (STDOUT_FILENO, buffer, bufferLen);
+  mt_gotoXY (y1, x1 + x2 - 1);
+  write (STDOUT_FILENO, "m", 1);
   for (size_t i = 1; i < y2 - 1; i++)
     {
       write (STDOUT_FILENO, "q", 1);
@@ -99,7 +94,7 @@ bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
     {
       mt_setfgcolor (header_fg);
       mt_setbgcolor (header_bg);
-      mt_gotoXY (x1, y1 + (y2 - headerLen) / 2);
+      mt_gotoXY (y1 + (y2 - headerLen) / 2, x1);
       write (STDOUT_FILENO, header, headerLen);
     }
 
