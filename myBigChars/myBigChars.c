@@ -1,6 +1,7 @@
 #include <myBigChars.h>
 
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 int
@@ -52,42 +53,52 @@ bc_strlen (const char *str)
 }
 
 int
+bc_printA (char *str)
+{
+  if (str == NULL)
+    return -1;
+
+  write (STDOUT_FILENO, "\E(0", 3);
+  write (STDOUT_FILENO, str, strlen (str));
+  write (STDOUT_FILENO, "\E(B", 3);
+
+  return 0;
+}
+
+int
 bc_box (int x1, int y1, int x2, int y2, enum colors box_fg, enum colors box_bg,
         char *header, enum colors header_fg, enum colors header_bg)
 {
   mt_setfgcolor (box_fg);
   mt_setbgcolor (box_bg);
 
-  write (STDOUT_FILENO, "\E(0", 3);
-
   // draw top border
   mt_gotoXY (y1, x1);
-  write (STDOUT_FILENO, "l", 1);
+  bc_printA ("l");
+  write (STDOUT_FILENO, "\E(0", 3);
   for (int i = 1; i < y2 - 1; i++)
     {
-      write (STDOUT_FILENO, "q", 1);
+      bc_printA ("q");
     }
-  write (STDOUT_FILENO, "k", 1);
+  bc_printA ("k");
 
   // draw side borders
   for (int i = 1; i < x2 - 1; i++)
     {
       mt_gotoXY (y1, x1 + i);
-      write (STDOUT_FILENO, "x", 1);
+      bc_printA ("x");
       mt_gotoXY (y1 + y2 - 1, x1 + i);
-      write (STDOUT_FILENO, "x", 1);
+      bc_printA ("x");
     }
 
   // draw bottom border
   mt_gotoXY (y1, x1 + x2 - 1);
-  write (STDOUT_FILENO, "m", 1);
+  bc_printA ("m");
   for (size_t i = 1; i < y2 - 1; i++)
     {
-      write (STDOUT_FILENO, "q", 1);
+      bc_printA ("q");
     }
-  write (STDOUT_FILENO, "j", 1);
-
-  write (STDOUT_FILENO, "\E(B", 3);
+  bc_printA ("j");
 
   int headerLen;
   if (header != NULL && (headerLen = bc_strlen (header)))
@@ -149,7 +160,6 @@ bc_printbigchar (int big[2], int x, int y, enum colors fg, enum colors bg)
   mt_setfgcolor (fg);
   mt_setbgcolor (bg);
 
-  write (STDOUT_FILENO, "\E(0", 3);
   for (int i = 0; i < 8; i++)
     {
       int value;
@@ -158,10 +168,9 @@ bc_printbigchar (int big[2], int x, int y, enum colors fg, enum colors bg)
         {
           if (bc_getbigcharpos (big, i, j, &value))
             return -1;
-          write (STDOUT_FILENO, value ? "a" : " ", 1);
+          bc_printA (value ? "a" : " ");
         }
     }
-  write (STDOUT_FILENO, "\E(B", 3);
   mt_setdefaultcolor ();
 
   return 0;
