@@ -1,14 +1,16 @@
 #include "console.h"
+#include <myBigChars.h>
 #include <mySimpleComputer.h>
 #include <myTerm.h>
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
 int
-main ()
+main (int argc, char *argv[])
 {
 
   if (!isatty (fileno (stdout)))
@@ -24,6 +26,32 @@ main ()
     {
       fprintf (stderr, "Ошибка: размер окна терминал слишком мал.\n");
       exit (1);
+    }
+
+  const char *font_filename = (argc > 1) ? argv[1] : "console/font.bin";
+  int fd = open (font_filename, O_RDONLY);
+  if (fd < 2)
+    {
+      fprintf (stderr, "Ошибка чтения файла %s\n", font_filename);
+      exit (1);
+    }
+
+  int bigchars[36]; // 18 символов × 2 int
+  int counted;
+
+  if (bc_bigcharread (fd, bigchars, 18, &counted) == -1)
+    {
+      fprintf (stderr, "Ошибка чтения файла шрифта\n");
+      close (fd);
+      exit (1);
+    }
+  close (fd);
+
+  if (counted != 18)
+    {
+      fprintf (stderr,
+               "Внимание: прочитано %d больших символов (ожидалось 18)\n",
+               counted);
     }
 
   mt_clrscr ();
