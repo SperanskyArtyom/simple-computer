@@ -1,4 +1,5 @@
 #include "console.h"
+#include <myBigChars.h>
 #include <mySimpleComputer.h>
 
 #include <stdio.h>
@@ -36,6 +37,11 @@ const int editingCellBlockY = memoryBlockY + memoryBlockHeight;
 const int editingCellBlockWidth = memoryBlockWidth;
 const int editingCellBlockHeight = 3;
 
+const int zoomedCellBlockX = accumulatorBlockX;
+const int zoomedCellBlockY = icounterBlockY + icounterBlockHeight;
+const int zoomedCellBlockWidth = accumulatorBlockWidth * 2;
+const int zoomedCellBlockHeight = 12;
+
 const int cashBlockX = 1;
 const int cashBlockY = editingCellBlockY + editingCellBlockHeight;
 const int cashBlockWidth = 11 * 6;
@@ -44,7 +50,12 @@ const int cashBlockXHeight = 7;
 const int inOutBlockX = cashBlockX + cashBlockWidth;
 const int inOutBlockY = cashBlockY;
 const int inOutBlockWidth = 11;
-const int inOutBlockHeight = 7;
+const int inOutBlockHeight = cashBlockXHeight;
+
+const int keysBlockX = inOutBlockX + inOutBlockWidth;
+const int keysBlockY = inOutBlockY;
+const int keysBlockWidth = 26;
+const int keysBlockHeight = inOutBlockHeight;
 
 char *termHist[4] = { NULL };
 
@@ -240,4 +251,31 @@ printCommand (void)
   snprintf (buffer, sizeof (buffer), " %02X : %02X", command, operand);
 
   write (STDOUT_FILENO, buffer, strlen (buffer));
+}
+
+void
+printBorders (void)
+{
+  bc_box (memoryBlockY, memoryBlockX, memoryBlockHeight, memoryBlockWidth,
+          WHITE, BLACK, "Оперативная память", RED, BLACK);
+  bc_box (accumulatorBlockY, accumulatorBlockX, accumulatorBlockHeight,
+          accumulatorBlockWidth, WHITE, BLACK, "Аккумулятор", RED, BLACK);
+  bc_box (flagsBlockY, flagsBlockX, flagsBlockHeight, flagsBlockWidth, WHITE,
+          BLACK, "Регистр флагов", RED, BLACK);
+  bc_box (icounterBlockY, icounterBlockX, icounterBlockHeight,
+          icounterBlockWidth, WHITE, BLACK, "Счётчик комманд", RED, BLACK);
+  bc_box (commandBlockY, commandBlockX, commandBlockHeight, commandBlockWidth,
+          WHITE, BLACK, "Команда", RED, BLACK);
+  bc_box (editingCellBlockY, editingCellBlockX, editingCellBlockHeight,
+          editingCellBlockWidth, WHITE, BLACK, "Редактируемая ячейка (формат)",
+          RED, WHITE);
+  bc_box (zoomedCellBlockY, zoomedCellBlockX, zoomedCellBlockHeight,
+          zoomedCellBlockWidth, WHITE, BLACK,
+          "Редактируемая ячейка (увеличено)", RED, WHITE);
+  bc_box (cashBlockY, cashBlockX, cashBlockXHeight, cashBlockWidth, WHITE,
+          BLACK, "Кеш процессора", GREEN, WHITE);
+  bc_box (inOutBlockY, inOutBlockX, inOutBlockHeight, inOutBlockWidth, WHITE,
+          BLACK, "IN--OUT", GREEN, WHITE);
+  bc_box (keysBlockY, keysBlockX, keysBlockHeight, keysBlockWidth, WHITE,
+          BLACK, "Клавиши", GREEN, WHITE);
 }

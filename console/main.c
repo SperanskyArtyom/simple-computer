@@ -40,7 +40,7 @@ main ()
       int value = rand () % (1 << 15);
       sc_memorySet (i, value);
     }
-  sc_memorySet (0, 0x7FFD);
+  sc_memorySet (0, 6708);
 
   int value;
   sc_commandEncode (0, 0x00, 1, &value);
@@ -61,12 +61,13 @@ main ()
   sc_memoryGet (editingCellAdress, &editingCellValue);
   printDecodedCommand (editingCellValue);
 
+  printBorders ();
+
   mt_setcursorvisible (0);
-  for (int i = 0; i < 7; i++)
+  for (int i = 0; i < 5; i++)
     {
       printTerm (i, 0);
       appendToHist (i, 0);
-      sleep (1);
     }
 
   mt_setcursorvisible (1);
