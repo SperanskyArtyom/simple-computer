@@ -279,3 +279,41 @@ printBorders (void)
   bc_box (keysBlockY, keysBlockX, keysBlockHeight, keysBlockWidth, WHITE,
           BLACK, "Клавиши", GREEN, WHITE);
 }
+
+void
+printBigCell (int *bigchars, int adress)
+{
+  int buffer[2];
+  int value;
+  sc_memoryGet (adress, &value);
+
+  buffer[0] = bigchars[16 * 2];
+  buffer[1] = bigchars[16 * 2 + 1];
+  bc_printbigchar (buffer, zoomedCellBlockY + 2, zoomedCellBlockX + 1, WHITE,
+                   BLACK);
+
+  int ch;
+  for (int i = 0; i < 2; i++)
+    {
+      ch = value & 0xF;
+      buffer[0] = bigchars[ch * 2];
+      buffer[1] = bigchars[ch * 2 + 1];
+      bc_printbigchar (buffer, zoomedCellBlockY + 2,
+                       zoomedCellBlockX + 1 + 8 * (4 - 2 * i), WHITE, BLACK);
+      value >>= 4;
+
+      ch = value & 0xB;
+      buffer[0] = bigchars[ch * 2];
+      buffer[1] = bigchars[ch * 2 + 1];
+      bc_printbigchar (buffer, zoomedCellBlockY + 2,
+                       zoomedCellBlockX + 1 + 8 * (4 - 2 * i - 1), WHITE,
+                       BLACK);
+      value >>= 3;
+    }
+  mt_gotoXY (zoomedCellBlockX + 1,
+             zoomedCellBlockY + zoomedCellBlockHeight - 2);
+  mt_setfgcolor (BLUE);
+  char str[64];
+  snprintf (str, 128, "Номер редактируемой ячейки %03d", adress);
+  write (STDOUT_FILENO, str, strlen (str));
+}

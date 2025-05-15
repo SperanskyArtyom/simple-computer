@@ -88,6 +88,7 @@ main (int argc, char *argv[])
 
   sc_memoryGet (editingCellAdress, &editingCellValue);
   printDecodedCommand (editingCellValue);
+  printBigCell (bigchars, editingCellAdress);
 
   printBorders ();
 

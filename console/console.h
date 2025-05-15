@@ -12,3 +12,4 @@ void printCommand (void);
 void printBorders (void);
 
 void appendToHist (int address, int input);
+void printBigCell (int *bigchars, int value);
