@@ -73,7 +73,7 @@ sc_accumulatorGet (int *value)
 int
 sc_icounterInit (void)
 {
-  icounter = 0;
+  icounter = 1;
   return 0;
 }
 
