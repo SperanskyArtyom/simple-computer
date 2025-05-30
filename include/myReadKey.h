@@ -4,14 +4,15 @@ enum keys
 {
   KEY_UNKNOWN,
 
+  KEY_UP,
   KEY_DOWN,
   KEY_RIGHT,
   KEY_LEFT,
-  KEY_UP,
 
   KEY_F5,
   KEY_F6,
 
+  KEY_ENTER,
   KEY_ESC,
 
   KEY_PLUS = 0x2b,
@@ -55,3 +56,5 @@ enum keys
   KEY_Y,
   KEY_Z,
 };
+
+int rk_readkey (enum keys *key);
