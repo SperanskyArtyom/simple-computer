@@ -192,6 +192,21 @@ main (int argc, char *argv[])
           rk_mytermsave ();
           break;
 
+        case KEY_I:
+          editingCellAdress = 0;
+          sc_memoryInit ();
+          sc_accumulatorInit ();
+          sc_regInit ();
+          sc_icounterInit ();
+          printAccumulator ();
+          printBigCell (bigchars, 0);
+          printCommand ();
+          printCells (editingCellAdress);
+          printCounters ();
+          printDecodedCommand (0);
+          printFlags ();
+          break;
+
         case KEY_F5:
           mt_gotoXY (67, 2);
           write (STDOUT_FILENO, "     ", 5);
