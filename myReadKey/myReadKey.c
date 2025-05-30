@@ -8,19 +8,31 @@
 #include <termios.h>
 #include <unistd.h>
 
+int
+pow (int x, int y)
+{
+  int result = 1;
+  while (y > 0)
+    {
+      result *= x;
+      y--;
+    }
+  return result;
+}
+
 void
 rk_read (char *buffer, size_t max_size)
 {
   int i = 0;
   char c;
   rk_mytermregime (1, 0, 1, 0, 1);
+  mt_setcursorvisible (1);
   while (i < max_size)
     {
       read (STDIN_FILENO, &c, 1);
 
       if (c == '\n')
         {
-          buffer[i] = '\0';
           break;
         }
       else if (c == 127)
@@ -39,7 +51,7 @@ rk_read (char *buffer, size_t max_size)
         }
     }
   buffer[i] = '\0';
-
+  mt_setcursorvisible (0);
   rk_mytermregime (0, 0, 1, 1, 1);
 }
 
@@ -198,5 +210,103 @@ rk_mytermregime (int regime, int vtime, int vmin, int echo, int sigint)
   if (tcsetattr (STDIN_FILENO, TCSANOW, &new_termios) != 0)
     return -1;
 
+  return 0;
+}
+
+int
+rk_readvalue (int *value, int timeout)
+{
+  if (value == NULL)
+    return -1;
+
+  rk_mytermregime (1, timeout, 1, 0, 1);
+  mt_setcursorvisible (1);
+
+  enum keys c;
+  char buffer[5] = { 0 };
+  int i = 0;
+  while (1)
+    {
+      rk_readkey (&c);
+      if (c == KEY_PLUS || c == KEY_MINUS)
+        break;
+      if (c == KEY_ESC)
+        {
+          *value = -1;
+          rk_mytermregime (0, 0, 0, 0, 0);
+          mt_setcursorvisible (0);
+          return 0;
+        }
+    }
+  buffer[i] = c;
+  write (STDOUT_FILENO, (char *)&c, 1);
+  i++;
+  for (int j = 0; j < 2; j++)
+    {
+      while (1)
+        {
+          rk_readkey (&c);
+          if (c >= KEY_0 && c <= KEY_7)
+            break;
+
+          if (c == KEY_ESC)
+            {
+              *value = -1;
+              rk_mytermregime (0, 0, 0, 0, 0);
+              mt_setcursorvisible (0);
+              return 0;
+            }
+        }
+      buffer[i] = c;
+      write (STDOUT_FILENO, (char *)&c, 1);
+      i++;
+      while (1)
+        {
+          rk_readkey (&c);
+          if (c >= KEY_0 && c <= KEY_9)
+            break;
+          if (c >= KEY_A && c <= KEY_F)
+            break;
+
+          if (c == KEY_ESC)
+            {
+              *value = -1;
+              rk_mytermregime (0, 0, 0, 0, 0);
+              mt_setcursorvisible (0);
+              return 0;
+            }
+        }
+      buffer[i] = c;
+      write (STDOUT_FILENO, (char *)&c, 1);
+      i++;
+    }
+
+  *value = 0;
+  i--;
+  for (int j = 0; j < 2; j++, i--)
+    {
+      if (buffer[i] <= '9')
+        {
+          *value += (buffer[i] - '0') * pow (16, j);
+        }
+      else if (buffer[i] <= 'f')
+        *value += (buffer[i] - 'a' + 10) * pow (16, j);
+    }
+
+  for (int j = 0; j < 2; j++, i--)
+    {
+      if (buffer[i] <= '9')
+        {
+          *value += ((buffer[i] - '0') * pow (16, j)) << 7;
+        }
+      else if (buffer[i] <= 'f')
+        *value += ((buffer[i] - 'a' + 10) * pow (16, j)) << 7;
+    }
+
+  if (buffer[i] == '-')
+    *value |= (1 << 14);
+
+  rk_mytermregime (0, 0, 0, 0, 0);
+  mt_setcursorvisible (0);
   return 0;
 }
