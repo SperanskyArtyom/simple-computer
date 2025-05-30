@@ -2,9 +2,46 @@
 #include <mySimpleComputer.h>
 #include <myTerm.h>
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <termios.h>
 #include <unistd.h>
+
+void
+rk_read (char *buffer, size_t max_size)
+{
+  int i = 0;
+  char c;
+  rk_mytermregime (1, 0, 1, 0, 1);
+  while (i < max_size)
+    {
+      read (STDIN_FILENO, &c, 1);
+
+      if (c == '\n')
+        {
+          buffer[i] = '\0';
+          break;
+        }
+      else if (c == 127)
+        {
+          if (i > 0)
+            {
+              i--;
+              write (STDOUT_FILENO, "\b \b", 3);
+            }
+        }
+      else if (isprint (c))
+        {
+          buffer[i] = c;
+          write (STDOUT_FILENO, &c, 1);
+          i++;
+        }
+    }
+  buffer[i] = '\0';
+
+  rk_mytermregime (0, 0, 1, 1, 1);
+}
 
 int
 rk_readkey (enum keys *key)
@@ -99,7 +136,7 @@ rk_mytermsave (void)
   mt_gotoXY (1, 26);
   mt_delline ();
   write (STDOUT_FILENO, buffer, strlen (buffer));
-  read (STDIN_FILENO, buffer, sizeof (buffer));
+  rk_read (buffer, sizeof (buffer));
   int result = sc_memorySave (buffer);
   mt_delline ();
   return result;
@@ -113,7 +150,7 @@ rk_mytermrestore (void)
   mt_gotoXY (1, 26);
   mt_delline ();
   write (STDOUT_FILENO, buffer, strlen (buffer));
-  read (STDIN_FILENO, buffer, sizeof (buffer));
+  rk_read (buffer, sizeof (buffer));
   int result = sc_memoryLoad (buffer);
   if (result)
     {
@@ -125,5 +162,41 @@ rk_mytermrestore (void)
       return -1;
     }
   mt_delline ();
+  return 0;
+}
+
+int
+rk_mytermregime (int regime, int vtime, int vmin, int echo, int sigint)
+{
+  struct termios new_termios;
+  if (tcgetattr (STDIN_FILENO, &new_termios) != 0)
+    return -1;
+
+  if (regime)
+    {
+      new_termios.c_lflag &= ~ICANON;
+      new_termios.c_cc[VTIME] = vtime;
+      new_termios.c_cc[VMIN] = vmin;
+
+      if (echo)
+        new_termios.c_lflag |= ECHO;
+      else
+        new_termios.c_lflag &= ~ECHO;
+
+      if (sigint)
+        new_termios.c_lflag |= ISIG;
+      else
+        new_termios.c_lflag &= ~ISIG;
+    }
+  else
+    {
+      new_termios.c_lflag |= ICANON;
+      new_termios.c_lflag |= ECHO;
+      new_termios.c_lflag |= ISIG;
+    }
+
+  if (tcsetattr (STDIN_FILENO, TCSANOW, &new_termios) != 0)
+    return -1;
+
   return 0;
 }
