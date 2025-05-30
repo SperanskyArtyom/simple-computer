@@ -5,6 +5,7 @@ APP_DIR = console
 MYSC_DIR = mySimpleComputer
 MYTERM_DIR = myTerm
 MYBC_DIR = myBigChars
+MYRK_DIR = myReadKey
 INCLUDE_DIR = include
 
 APP_PATH = $(APP_DIR)/$(APP_NAME)
@@ -12,6 +13,7 @@ FONT_PATH = $(APP_DIR)/$(FONT_NAME)
 MYSC_PATH = $(MYSC_DIR)/libmy_sc.a
 MYTERM_PATH = $(MYTERM_DIR)/libmyTerm.a
 MYBC_PATH = $(MYBC_DIR)/libmy_bc.a
+MYRK_PATH = $(MYRK_DIR)/libmy_rk.a
 
 # Исключаем font.c из списка исходников для console
 APP_SOURCES = $(filter-out $(APP_DIR)/font.c, $(wildcard $(APP_DIR)/*.c))
@@ -23,14 +25,15 @@ FONT_OBJECTS = $(FONT_SOURCES:$(APP_DIR)/%.c=$(APP_DIR)/%.o)
 MYSC_SOURCES = $(wildcard $(MYSC_DIR)/*.c)
 MYTERM_SOURCES = $(wildcard $(MYTERM_DIR)/*.c)
 MYBC_SOURCES = $(wildcard $(MYBC_DIR)/*.c)
+MYRK_SOURCES = $(wildcard $(MYRK_DIR)/*.c)
 
 CC = gcc
 CFLAGS = -Wall -Wextra -I $(INCLUDE_DIR) -MMD
 DEPS = $(APP_OBJECTS:.o=.d) $(FONT_OBJECTS:.o=.d)
-LIBS = $(MYSC_PATH) $(MYTERM_PATH) $(MYBC_PATH)
+LIBS = $(MYSC_PATH) $(MYTERM_PATH) $(MYBC_PATH) $(MYRK_PATH)
 
 # Порядок библиотек важен! myBigChars зависит от myTerm, поэтому myTerm должен быть после
-LIB_ORDER = -L$(MYSC_DIR) -lmy_sc -L$(MYTERM_DIR) -lmyTerm -L$(MYBC_DIR) -lmy_bc
+LIB_ORDER = -L$(MYSC_DIR) -lmy_sc -L$(MYTERM_DIR) -lmyTerm -L$(MYBC_DIR) -lmy_bc -L$(MYRK_DIR) -lmy_rk
 
 all: $(APP_PATH) $(FONT_PATH)
 
@@ -51,6 +54,9 @@ $(MYTERM_PATH): $(MYTERM_SOURCES)
 
 $(MYBC_PATH): $(MYBC_SOURCES)
 	cd $(MYBC_DIR) && $(MAKE)
+
+$(MYRK_PATH): $(MYRK_SOURCES)
+	cd $(MYRK_DIR) && $(MAKE)
 
 -include $(DEPS)
 
