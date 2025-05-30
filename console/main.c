@@ -1,5 +1,6 @@
 #include "console.h"
 #include <myBigChars.h>
+#include <myReadKey.h>
 #include <mySimpleComputer.h>
 #include <myTerm.h>
 
@@ -8,6 +9,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+
+void updateFlags ();
 
 int
 main (int argc, char *argv[])
@@ -52,9 +55,11 @@ main (int argc, char *argv[])
       fprintf (stderr,
                "Внимание: прочитано %d больших символов (ожидалось 18)\n",
                counted);
+      exit (1);
     }
 
   mt_clrscr ();
+  mt_setcursorvisible (0);
 
   sc_memoryInit ();
   sc_accumulatorInit ();
@@ -62,37 +67,9 @@ main (int argc, char *argv[])
   sc_regInit ();
   int editingCellAdress = 0, editingCellValue;
 
-  srand (time (NULL));
-  for (int i = 0; i < 12; i++)
-    {
-      int value = rand () % (1 << 15);
-      sc_memorySet (i, value);
-    }
-  sc_memorySet (0, 0x7FFF);
-  sc_memorySet (1, 0x7FFF);
+  printCells (editingCellAdress);
 
-  int value;
-  sc_commandEncode (0, 0x00, 1, &value);
-  sc_memorySet (12, value);
-  sc_icounterSet (1);
-
-  for (int i = 0; i < 128; i++)
-    if (i == editingCellAdress)
-      printCell (i, BLACK, WHITE);
-    else
-      printCell (i, WHITE, BLACK);
-
-  for (int i = 0; i < 128; i++)
-    {
-      int sign, command, operand, value;
-      sc_memoryGet (i, &value);
-      sc_commandDecode (value, &sign, &command, &operand);
-      if (sign || sc_commandValidate (command))
-        {
-          sc_regSet (FLAG_INVALID_CMD, 1);
-          break;
-        }
-    }
+  updateFlags ();
 
   printAccumulator ();
   printFlags ();
@@ -105,15 +82,135 @@ main (int argc, char *argv[])
 
   printBorders ();
 
-  mt_setcursorvisible (0);
   for (int i = 0; i < 5; i++)
     {
       printTerm (i, 0);
       appendToHist (i, 0);
     }
+  while (1)
+    {
+      enum keys choice;
+      rk_mytermregime (1, 0, 1, 0, 1);
+      rk_readkey (&choice);
+      rk_mytermregime (0, 0, 0, 0, 0);
+      switch (choice)
+        {
+        case KEY_ESC:
+          mt_setcursorvisible (1);
+          mt_setdefaultcolor ();
+          mt_gotoXY (1, winY);
+          return 0;
 
+        case KEY_LEFT:
+          if (editingCellAdress == 120)
+            editingCellAdress = 127;
+          else if (editingCellAdress % 10 == 0)
+            editingCellAdress += 9;
+          else
+            editingCellAdress--;
+
+          printCells (editingCellAdress);
+          sc_memoryGet (editingCellAdress, &editingCellValue);
+          printDecodedCommand (editingCellValue);
+          printBigCell (bigchars, editingCellAdress);
+          break;
+
+        case KEY_RIGHT:
+          if (editingCellAdress == 127)
+            editingCellAdress = 120;
+          else if (editingCellAdress % 10 == 9)
+            editingCellAdress -= 9;
+          else
+            editingCellAdress++;
+          printCells (editingCellAdress);
+          sc_memoryGet (editingCellAdress, &editingCellValue);
+          printDecodedCommand (editingCellValue);
+          printBigCell (bigchars, editingCellAdress);
+          break;
+
+        case KEY_UP:
+          if (editingCellAdress < 8)
+            editingCellAdress += 120;
+          else if (editingCellAdress < 10)
+            editingCellAdress += 110;
+          else
+            editingCellAdress -= 10;
+          printCells (editingCellAdress);
+          sc_memoryGet (editingCellAdress, &editingCellValue);
+          printDecodedCommand (editingCellValue);
+          printBigCell (bigchars, editingCellAdress);
+          break;
+
+        case KEY_DOWN:
+          if (editingCellAdress > 119)
+            editingCellAdress -= 120;
+          else if (editingCellAdress > 117)
+            editingCellAdress -= 110;
+          else
+            editingCellAdress += 10;
+          printCells (editingCellAdress);
+          sc_memoryGet (editingCellAdress, &editingCellValue);
+          printDecodedCommand (editingCellValue);
+          printBigCell (bigchars, editingCellAdress);
+          break;
+
+        case KEY_ENTER:
+
+          int x = (editingCellAdress % 10) * 6 + 2;
+          int y = editingCellAdress / 10 + 2;
+          mt_gotoXY (x, y);
+          write (STDOUT_FILENO, "     ", 5);
+          mt_gotoXY (x, y);
+          int value;
+          rk_readvalue (&value, 0);
+          if (value != -1)
+            {
+              sc_memorySet (editingCellAdress, value);
+
+              updateFlags ();
+              printFlags ();
+              sc_memoryGet (editingCellAdress, &editingCellValue);
+              printDecodedCommand (editingCellValue);
+              printBigCell (bigchars, editingCellAdress);
+            }
+          printCell (editingCellAdress, BLACK, WHITE);
+          break;
+
+        case KEY_L:
+          rk_mytermrestore ();
+          printCells (editingCellAdress);
+          sc_memoryGet (editingCellAdress, &editingCellValue);
+          printDecodedCommand (editingCellValue);
+          printBigCell (bigchars, editingCellAdress);
+          updateFlags ();
+          printFlags ();
+          printCommand ();
+          break;
+
+        default:
+          break;
+        }
+    }
   mt_setcursorvisible (1);
-  mt_gotoXY (winX, winY);
-  mt_delline ();
+  mt_setdefaultcolor ();
+  mt_gotoXY (30, winY);
+
   return 0;
+}
+
+void
+updateFlags ()
+{
+  for (int i = 0; i < 128; i++)
+    {
+      int sign, command, operand, value;
+      sc_memoryGet (i, &value);
+      sc_commandDecode (value, &sign, &command, &operand);
+      if (sign || sc_commandValidate (command))
+        {
+          sc_regSet (FLAG_INVALID_CMD, 1);
+          return;
+        }
+    }
+  sc_regSet (FLAG_INVALID_CMD, 0);
 }
