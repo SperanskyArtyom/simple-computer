@@ -327,4 +327,15 @@ printBigCell (int *bigchars, int adress)
   char str[64];
   snprintf (str, 128, "Номер редактируемой ячейки %03d", adress);
   write (STDOUT_FILENO, str, strlen (str));
+  mt_setdefaultcolor ();
+}
+
+void
+printCells (int editingCellAdress)
+{
+  for (int i = 0; i < 128; i++)
+    if (i == editingCellAdress)
+      printCell (i, BLACK, WHITE);
+    else
+      printCell (i, WHITE, BLACK);
 }
