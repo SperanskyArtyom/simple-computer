@@ -278,13 +278,11 @@ create_char_pattern (int *big, char symbol)
         }
       break;
 
-    case '!':
-      for (int i = 0; i < 8; i++)
+    case '-':
+      for (int i = 1; i < 7; i++)
         {
-          if (i == 6)
-            continue;
-          bc_setbigcharpos (big, i, 3, 1);
-          bc_setbigcharpos (big, i, 4, 1);
+          bc_setbigcharpos (big, 3, i, 1);
+          bc_setbigcharpos (big, 4, i, 1);
         }
       break;
     default:
@@ -327,7 +325,7 @@ main ()
     { 6, '6', { 0, 0 } },  { 7, '7', { 0, 0 } },  { 8, '8', { 0, 0 } },
     { 9, '9', { 0, 0 } },  { 10, 'A', { 0, 0 } }, { 11, 'B', { 0, 0 } },
     { 12, 'C', { 0, 0 } }, { 13, 'D', { 0, 0 } }, { 14, 'E', { 0, 0 } },
-    { 15, 'F', { 0, 0 } }, { 16, '+', { 0, 0 } }, { 17, '!', { 0, 0 } }
+    { 15, 'F', { 0, 0 } }, { 16, '+', { 0, 0 } }, { 17, '-', { 0, 0 } }
   };
   int patterns[36]; // 18 символов × 2 int
   for (int i = 0; i < 18; i++)

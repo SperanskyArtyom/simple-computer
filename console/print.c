@@ -174,10 +174,10 @@ printAccumulator (void)
   sc_commandDecode (value, &sign, &command, &operand);
 
   char buffer[20];
-  mt_gotoXY (accumulatorBlockX + 2, accumulatorBlockY + 1);
+  mt_gotoXY (accumulatorBlockX + 1, accumulatorBlockY + 1);
 
-  snprintf (buffer, sizeof (buffer), "sc: %c%X%X ", sign ? '-' : '+', command,
-            operand);
+  snprintf (buffer, sizeof (buffer), "sc: %c%02X%02X ", sign ? '-' : '+',
+            command, operand);
   write (STDOUT_FILENO, buffer, strlen (buffer));
   snprintf (buffer, sizeof (buffer), "hex: %04X", value);
   write (STDOUT_FILENO, buffer, strlen (buffer));
@@ -191,6 +191,9 @@ printCounters (void)
   sc_commandDecode (value, &sign, &command, &operand);
 
   char buffer[20];
+  mt_gotoXY (icounterBlockX + 1, icounterBlockY + 1);
+  snprintf (buffer, sizeof (buffer), "T: 00");
+  write (STDOUT_FILENO, buffer, strlen (buffer));
   mt_gotoXY (icounterBlockX + icounterBlockWidth / 2, icounterBlockY + 1);
   snprintf (buffer, sizeof (buffer), "IC: %c%02X%02X", sign ? '-' : '+',
             command, operand);
@@ -287,8 +290,16 @@ printBigCell (int *bigchars, int adress)
   int value;
   sc_memoryGet (adress, &value);
 
-  buffer[0] = bigchars[16 * 2];
-  buffer[1] = bigchars[16 * 2 + 1];
+  if ((value >> 14) & 0x1)
+    {
+      buffer[0] = bigchars[17 * 2];
+      buffer[1] = bigchars[17 * 2 + 1];
+    }
+  else
+    {
+      buffer[0] = bigchars[16 * 2];
+      buffer[1] = bigchars[16 * 2 + 1];
+    }
   bc_printbigchar (buffer, zoomedCellBlockY + 2, zoomedCellBlockX + 1, WHITE,
                    BLACK);
 
@@ -302,7 +313,7 @@ printBigCell (int *bigchars, int adress)
                        zoomedCellBlockX + 1 + 8 * (4 - 2 * i), WHITE, BLACK);
       value >>= 4;
 
-      ch = value & 0xB;
+      ch = value & 0x7;
       buffer[0] = bigchars[ch * 2];
       buffer[1] = bigchars[ch * 2 + 1];
       bc_printbigchar (buffer, zoomedCellBlockY + 2,

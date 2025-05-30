@@ -68,7 +68,8 @@ main (int argc, char *argv[])
       int value = rand () % (1 << 15);
       sc_memorySet (i, value);
     }
-  sc_memorySet (0, 6708);
+  sc_memorySet (0, 0x7FFF);
+  sc_memorySet (1, 0x7FFF);
 
   int value;
   sc_commandEncode (0, 0x00, 1, &value);
@@ -80,6 +81,18 @@ main (int argc, char *argv[])
       printCell (i, BLACK, WHITE);
     else
       printCell (i, WHITE, BLACK);
+
+  for (int i = 0; i < 128; i++)
+    {
+      int sign, command, operand, value;
+      sc_memoryGet (i, &value);
+      sc_commandDecode (value, &sign, &command, &operand);
+      if (sign || sc_commandValidate (command))
+        {
+          sc_regSet (FLAG_INVALID_CMD, 1);
+          break;
+        }
+    }
 
   printAccumulator ();
   printFlags ();
