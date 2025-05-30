@@ -1,5 +1,8 @@
 #include <myReadKey.h>
+#include <mySimpleComputer.h>
+#include <myTerm.h>
 
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -85,5 +88,42 @@ rk_readkey (enum keys *key)
     }
 
   *key = KEY_UNKNOWN;
+  return 0;
+}
+
+int
+rk_mytermsave (void)
+{
+  char buffer[128];
+  snprintf (buffer, sizeof (buffer), "Введите имя файла для сохранения: ");
+  mt_gotoXY (1, 26);
+  mt_delline ();
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+  read (STDIN_FILENO, buffer, sizeof (buffer));
+  int result = sc_memorySave (buffer);
+  mt_delline ();
+  return result;
+}
+
+int
+rk_mytermrestore (void)
+{
+  char buffer[128];
+  snprintf (buffer, sizeof (buffer), "Введите имя файла для загрузки: ");
+  mt_gotoXY (1, 26);
+  mt_delline ();
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+  read (STDIN_FILENO, buffer, sizeof (buffer));
+  int result = sc_memoryLoad (buffer);
+  if (result)
+    {
+      mt_delline ();
+      snprintf (buffer, sizeof (buffer), "Неверное имя файла!");
+      mt_setbgcolor (RED);
+      write (STDOUT_FILENO, buffer, strlen (buffer));
+      mt_setdefaultcolor ();
+      return -1;
+    }
+  mt_delline ();
   return 0;
 }

@@ -58,3 +58,5 @@ enum keys
 };
 
 int rk_readkey (enum keys *key);
+int rk_mytermsave (void);
+int rk_mytermrestore (void);
