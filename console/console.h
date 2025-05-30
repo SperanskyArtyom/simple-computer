@@ -11,6 +11,7 @@ void printTerm (int address, int input);
 void printCommand (void);
 void printBorders (void);
 void printCells (int editingCellAdress);
+void printKeys ();
 
 void appendToHist (int address, int input);
 void printBigCell (int *bigchars, int value);

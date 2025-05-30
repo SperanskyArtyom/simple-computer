@@ -25,7 +25,7 @@ main (int argc, char *argv[])
 
   int winX, winY;
   mt_getscreensize (&winY, &winX);
-  if (winX < 103 || winY < 26)
+  if (winX < 108 || winY < 26)
     {
       fprintf (stderr, "Ошибка: размер окна терминал слишком мал.\n");
       exit (1);
@@ -75,6 +75,7 @@ main (int argc, char *argv[])
   printFlags ();
   printCounters ();
   printCommand ();
+  printKeys ();
 
   sc_memoryGet (editingCellAdress, &editingCellValue);
   printDecodedCommand (editingCellValue);
@@ -197,10 +198,8 @@ main (int argc, char *argv[])
           mt_gotoXY (67, 2);
           rk_readvalue (&value, 0);
           if (value != -1)
-            {
-              sc_accumulatorSet (value);
-              printAccumulator ();
-            }
+            sc_accumulatorSet (value);
+          printAccumulator ();
           break;
 
         case KEY_F6:
@@ -209,11 +208,9 @@ main (int argc, char *argv[])
           mt_gotoXY (76, 5);
           rk_readvalue (&value, 0);
           if (value != -1 && value < 128)
-            {
-              sc_icounterSet (value);
-              printCounters ();
-              printCommand ();
-            }
+            sc_icounterSet (value);
+          printCounters ();
+          printCommand ();
           break;
 
         default:

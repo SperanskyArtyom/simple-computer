@@ -14,12 +14,12 @@ const int memoryBlockHeight = 15;
 
 const int accumulatorBlockX = memoryBlockX + memoryBlockWidth;
 const int accumulatorBlockY = 1;
-const int accumulatorBlockWidth = 21;
+const int accumulatorBlockWidth = 23;
 const int accumulatorBlockHeight = 3;
 
 const int flagsBlockX = accumulatorBlockX + accumulatorBlockWidth;
 const int flagsBlockY = 1;
-const int flagsBlockWidth = accumulatorBlockWidth;
+const int flagsBlockWidth = accumulatorBlockWidth + 1;
 const int flagsBlockHeight = accumulatorBlockHeight;
 
 const int icounterBlockX = accumulatorBlockX;
@@ -29,7 +29,7 @@ const int icounterBlockHeight = accumulatorBlockHeight;
 
 const int commandBlockX = flagsBlockX;
 const int commandBlockY = icounterBlockY;
-const int commandBlockWidth = accumulatorBlockWidth;
+const int commandBlockWidth = flagsBlockWidth;
 const int commandBlockHeight = accumulatorBlockHeight;
 
 const int editingCellBlockX = 1;
@@ -39,7 +39,7 @@ const int editingCellBlockHeight = 3;
 
 const int zoomedCellBlockX = accumulatorBlockX;
 const int zoomedCellBlockY = icounterBlockY + icounterBlockHeight;
-const int zoomedCellBlockWidth = accumulatorBlockWidth * 2;
+const int zoomedCellBlockWidth = accumulatorBlockWidth + flagsBlockWidth;
 const int zoomedCellBlockHeight = 12;
 
 const int cashBlockX = 1;
@@ -54,7 +54,7 @@ const int inOutBlockHeight = cashBlockXHeight;
 
 const int keysBlockX = inOutBlockX + inOutBlockWidth;
 const int keysBlockY = inOutBlockY;
-const int keysBlockWidth = 26;
+const int keysBlockWidth = 31;
 const int keysBlockHeight = inOutBlockHeight;
 
 char *termHist[4] = { NULL };
@@ -174,7 +174,7 @@ printAccumulator (void)
   sc_commandDecode (value, &sign, &command, &operand);
 
   char buffer[20];
-  mt_gotoXY (accumulatorBlockX + 1, accumulatorBlockY + 1);
+  mt_gotoXY (accumulatorBlockX + 2, accumulatorBlockY + 1);
 
   snprintf (buffer, sizeof (buffer), "sc: %c%02X%02X ", sign ? '-' : '+',
             command, operand);
@@ -191,10 +191,10 @@ printCounters (void)
   sc_commandDecode (value, &sign, &command, &operand);
 
   char buffer[20];
-  mt_gotoXY (icounterBlockX + 1, icounterBlockY + 1);
+  mt_gotoXY (icounterBlockX + 2, icounterBlockY + 1);
   snprintf (buffer, sizeof (buffer), "T: 00");
   write (STDOUT_FILENO, buffer, strlen (buffer));
-  mt_gotoXY (icounterBlockX + icounterBlockWidth / 2, icounterBlockY + 1);
+  mt_gotoXY (icounterBlockX + icounterBlockWidth / 2 + 1, icounterBlockY + 1);
   snprintf (buffer, sizeof (buffer), "IC: %c%02X%02X", sign ? '-' : '+',
             command, operand);
   write (STDOUT_FILENO, buffer, strlen (buffer));
@@ -300,7 +300,7 @@ printBigCell (int *bigchars, int adress)
       buffer[0] = bigchars[16 * 2];
       buffer[1] = bigchars[16 * 2 + 1];
     }
-  bc_printbigchar (buffer, zoomedCellBlockY + 2, zoomedCellBlockX + 1, WHITE,
+  bc_printbigchar (buffer, zoomedCellBlockY + 2, zoomedCellBlockX + 3, WHITE,
                    BLACK);
 
   int ch;
@@ -310,24 +310,50 @@ printBigCell (int *bigchars, int adress)
       buffer[0] = bigchars[ch * 2];
       buffer[1] = bigchars[ch * 2 + 1];
       bc_printbigchar (buffer, zoomedCellBlockY + 2,
-                       zoomedCellBlockX + 1 + 8 * (4 - 2 * i), WHITE, BLACK);
+                       zoomedCellBlockX + 3 + 8 * (4 - 2 * i), WHITE, BLACK);
       value >>= 4;
 
       ch = value & 0x7;
       buffer[0] = bigchars[ch * 2];
       buffer[1] = bigchars[ch * 2 + 1];
       bc_printbigchar (buffer, zoomedCellBlockY + 2,
-                       zoomedCellBlockX + 1 + 8 * (4 - 2 * i - 1), WHITE,
+                       zoomedCellBlockX + 3 + 8 * (4 - 2 * i - 1), WHITE,
                        BLACK);
       value >>= 3;
     }
-  mt_gotoXY (zoomedCellBlockX + 1,
+  mt_gotoXY (zoomedCellBlockX + 3,
              zoomedCellBlockY + zoomedCellBlockHeight - 2);
   mt_setfgcolor (BLUE);
   char str[64];
   snprintf (str, 128, "Номер редактируемой ячейки %03d", adress);
   write (STDOUT_FILENO, str, strlen (str));
   mt_setdefaultcolor ();
+}
+
+void
+printKeys ()
+{
+  char buffer[128];
+
+  mt_gotoXY (keysBlockX + 1, keysBlockY + 1);
+  snprintf (buffer, sizeof (buffer), "l - load  s - save  i - reset");
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+
+  mt_gotoXY (keysBlockX + 1, keysBlockY + 2);
+  snprintf (buffer, sizeof (buffer), "r - run   t - step");
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+
+  mt_gotoXY (keysBlockX + 1, keysBlockY + 3);
+  snprintf (buffer, sizeof (buffer), "ESC - выход");
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+
+  mt_gotoXY (keysBlockX + 1, keysBlockY + 4);
+  snprintf (buffer, sizeof (buffer), "F5 - accumulator");
+  write (STDOUT_FILENO, buffer, strlen (buffer));
+
+  mt_gotoXY (keysBlockX + 1, keysBlockY + 5);
+  snprintf (buffer, sizeof (buffer), "F6 - instruction counter");
+  write (STDOUT_FILENO, buffer, strlen (buffer));
 }
 
 void
