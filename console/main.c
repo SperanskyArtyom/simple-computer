@@ -155,7 +155,6 @@ main (int argc, char *argv[])
           break;
 
         case KEY_ENTER:
-
           int x = (editingCellAdress % 10) * 6 + 2;
           int y = editingCellAdress / 10 + 2;
           mt_gotoXY (x, y);
@@ -172,6 +171,7 @@ main (int argc, char *argv[])
               sc_memoryGet (editingCellAdress, &editingCellValue);
               printDecodedCommand (editingCellValue);
               printBigCell (bigchars, editingCellAdress);
+              printCommand ();
             }
           printCell (editingCellAdress, BLACK, WHITE);
           break;
@@ -185,6 +185,35 @@ main (int argc, char *argv[])
           updateFlags ();
           printFlags ();
           printCommand ();
+          break;
+
+        case KEY_S:
+          rk_mytermsave ();
+          break;
+
+        case KEY_F5:
+          mt_gotoXY (67, 2);
+          write (STDOUT_FILENO, "     ", 5);
+          mt_gotoXY (67, 2);
+          rk_readvalue (&value, 0);
+          if (value != -1)
+            {
+              sc_accumulatorSet (value);
+              printAccumulator ();
+            }
+          break;
+
+        case KEY_F6:
+          mt_gotoXY (76, 5);
+          write (STDOUT_FILENO, "     ", 5);
+          mt_gotoXY (76, 5);
+          rk_readvalue (&value, 0);
+          if (value != -1 && value < 128)
+            {
+              sc_icounterSet (value);
+              printCounters ();
+              printCommand ();
+            }
           break;
 
         default:
