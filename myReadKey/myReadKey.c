@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 int
-pow (int x, int y)
+power (int x, int y)
 {
   int result = 1;
   while (y > 0)
@@ -287,20 +287,20 @@ rk_readvalue (int *value, int timeout)
     {
       if (buffer[i] <= '9')
         {
-          *value += (buffer[i] - '0') * pow (16, j);
+          *value += (buffer[i] - '0') * power (16, j);
         }
       else if (buffer[i] <= 'f')
-        *value += (buffer[i] - 'a' + 10) * pow (16, j);
+        *value += (buffer[i] - 'a' + 10) * power (16, j);
     }
 
   for (int j = 0; j < 2; j++, i--)
     {
       if (buffer[i] <= '9')
         {
-          *value += ((buffer[i] - '0') * pow (16, j)) << 7;
+          *value += ((buffer[i] - '0') * power (16, j)) << 7;
         }
       else if (buffer[i] <= 'f')
-        *value += ((buffer[i] - 'a' + 10) * pow (16, j)) << 7;
+        *value += ((buffer[i] - 'a' + 10) * power (16, j)) << 7;
     }
 
   if (buffer[i] == '-')
