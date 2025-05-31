@@ -208,9 +208,9 @@ main (int argc, char *argv[])
           break;
 
         case KEY_F5:
-          mt_gotoXY (67, 2);
+          mt_gotoXY (68, 2);
           write (STDOUT_FILENO, "     ", 5);
-          mt_gotoXY (67, 2);
+          mt_gotoXY (68, 2);
           rk_readvalue (&value, 0);
           if (value != -1)
             sc_accumulatorSet (value);
@@ -218,9 +218,9 @@ main (int argc, char *argv[])
           break;
 
         case KEY_F6:
-          mt_gotoXY (76, 5);
+          mt_gotoXY (78, 5);
           write (STDOUT_FILENO, "     ", 5);
-          mt_gotoXY (76, 5);
+          mt_gotoXY (78, 5);
           rk_readvalue (&value, 0);
           if (value != -1 && value < 128)
             sc_icounterSet (value);
