@@ -156,11 +156,11 @@ main (int argc, char *argv[])
           break;
 
         case KEY_ENTER:
-          int x = (editingCellAdress % 10) * 6 + 2;
-          int y = editingCellAdress / 10 + 2;
-          mt_gotoXY (x, y);
+          mt_gotoXY ((editingCellAdress % 10) * 6 + 2,
+                     editingCellAdress / 10 + 2);
           write (STDOUT_FILENO, "     ", 5);
-          mt_gotoXY (x, y);
+          mt_gotoXY ((editingCellAdress % 10) * 6 + 2,
+                     editingCellAdress / 10 + 2);
           int value;
           rk_readvalue (&value, 0);
           if (value != -1)
