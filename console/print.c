@@ -1,4 +1,4 @@
-#include "console.h"
+#include <console.h>
 #include <myBigChars.h>
 #include <mySimpleComputer.h>
 
@@ -219,16 +219,11 @@ printTerm (int address, int input)
 {
   int i = printTermHist ();
   char buffer[20];
-  if (input)
-    snprintf (buffer, sizeof (buffer), "%02d> ", address);
-  else
-    {
-      int value, sign, command, operand;
-      sc_memoryGet (address, &value);
-      sc_commandDecode (value, &sign, &command, &operand);
-      snprintf (buffer, sizeof (buffer), "%02d< %c%02X%02X", address,
-                sign ? '-' : '+', command, operand);
-    }
+  int value, sign, command, operand;
+  sc_memoryGet (address, &value);
+  sc_commandDecode (value, &sign, &command, &operand);
+  snprintf (buffer, sizeof (buffer), "%02d%c %c%02X%02X", address,
+            input ? '>' : '<', sign ? '-' : '+', command, operand);
 
   mt_gotoXY (inOutBlockX + 1, inOutBlockY + i + 1);
   write (STDOUT_FILENO, buffer, strlen (buffer));
