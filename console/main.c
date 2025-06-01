@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -63,6 +64,7 @@ main (int argc, char *argv[])
   mt_setcursorvisible (0);
 
   signal (SIGUSR1, IRC);
+  signal (SIGALRM, IRC);
   raise (SIGUSR1);
   int editingCellAdress = 0, editingCellValue;
 
@@ -84,7 +86,10 @@ main (int argc, char *argv[])
 
   while (1)
     {
+      struct itimerval nval = { { 3, 0 }, { 1, 0 } },
+                       stop = { { 0, 0 }, { 0, 0 } };
       enum keys choice;
+      int ignore_flag;
       rk_mytermregime (1, 0, 1, 0, 1);
       rk_readkey (&choice);
       rk_mytermregime (0, 0, 0, 0, 0);
@@ -198,6 +203,45 @@ main (int argc, char *argv[])
           printCounters ();
           printDecodedCommand (0);
           printFlags ();
+          break;
+
+        case KEY_T:
+          CU ();
+          updateFlags ();
+          printFlags ();
+          printAccumulator ();
+          printBigCell (bigchars, editingCellAdress);
+          printCommand ();
+          printCells (editingCellAdress);
+          printCounters ();
+          sc_memoryGet (editingCellAdress, &editingCellValue);
+          printDecodedCommand (editingCellValue);
+          printCommand ();
+          break;
+
+        case KEY_R:
+          sc_regSet (FLAG_IGNORE_CLOCK, 0);
+          printFlags ();
+          ignore_flag = 0;
+          setitimer (ITIMER_REAL, &nval, NULL);
+          while (1)
+            {
+              pause ();
+              sc_regGet (FLAG_IGNORE_CLOCK, &ignore_flag);
+
+              printFlags ();
+              printAccumulator ();
+              printBigCell (bigchars, editingCellAdress);
+              printCommand ();
+              printCells (editingCellAdress);
+              printCounters ();
+              sc_memoryGet (editingCellAdress, &editingCellValue);
+              printDecodedCommand (editingCellValue);
+              printCommand ();
+              if (ignore_flag)
+                break;
+            }
+          setitimer (ITIMER_REAL, &stop, NULL);
           break;
 
         case KEY_F5:
