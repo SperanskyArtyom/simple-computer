@@ -1,7 +1,6 @@
 #include <mySimpleComputer.h>
 
 #include <signal.h>
-#include <stdio.h>
 #include <sys/time.h>
 
 void
