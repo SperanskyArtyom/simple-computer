@@ -5,6 +5,7 @@
 #include <myTerm.h>
 
 #include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -61,10 +62,8 @@ main (int argc, char *argv[])
   mt_clrscr ();
   mt_setcursorvisible (0);
 
-  sc_memoryInit ();
-  sc_accumulatorInit ();
-  sc_icounterInit ();
-  sc_regInit ();
+  signal (SIGUSR1, IRC);
+  raise (SIGUSR1);
   int editingCellAdress = 0, editingCellValue;
 
   printCells (editingCellAdress);
@@ -83,11 +82,6 @@ main (int argc, char *argv[])
 
   printBorders ();
 
-  for (int i = 0; i < 5; i++)
-    {
-      printTerm (i, 0);
-      appendToHist (i, 0);
-    }
   while (1)
     {
       enum keys choice;
@@ -193,11 +187,10 @@ main (int argc, char *argv[])
           break;
 
         case KEY_I:
+
           editingCellAdress = 0;
-          sc_memoryInit ();
-          sc_accumulatorInit ();
-          sc_regInit ();
-          sc_icounterInit ();
+          raise (SIGUSR1);
+
           printAccumulator ();
           printBigCell (bigchars, 0);
           printCommand ();
