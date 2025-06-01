@@ -88,3 +88,11 @@ mt_delline (void)
   writeEscSeq (escapeSequence);
   return 0;
 }
+
+void
+mt_printMessage (const char *str)
+{
+  mt_gotoXY (1, 26);
+  mt_delline ();
+  write (STDOUT_FILENO, str, strlen (str));
+}
