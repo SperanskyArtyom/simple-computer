@@ -14,6 +14,7 @@ icounterStep ()
 void
 CU (void)
 {
+  mt_printMessage ("");
   int adress, value, command, operand, sign;
 
   // a. Получаем текущаю команду.
@@ -66,6 +67,7 @@ CU (void)
           break;
         }
       printTerm (operand, 0);
+      appendToHist (operand, 0);
       icounterStep ();
       break;
 
@@ -130,7 +132,13 @@ CU (void)
       break;
 
     default:
-      ALU (command, operand);
+      if (ALU (command, operand))
+        {
+          sc_regSet (FLAG_IGNORE_CLOCK, 1);
+          mt_printMessage ("Error while ALU operation");
+          break;
+        }
+      icounterStep ();
       break;
     }
 }
