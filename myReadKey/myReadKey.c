@@ -144,10 +144,7 @@ int
 rk_mytermsave (void)
 {
   char buffer[128];
-  snprintf (buffer, sizeof (buffer), "Введите имя файла для сохранения: ");
-  mt_gotoXY (1, 26);
-  mt_delline ();
-  write (STDOUT_FILENO, buffer, strlen (buffer));
+  mt_printMessage ("Введите имя файла для сохранения: ");
   rk_read (buffer, sizeof (buffer));
   int result = sc_memorySave (buffer);
   mt_delline ();
@@ -158,19 +155,12 @@ int
 rk_mytermrestore (void)
 {
   char buffer[128];
-  snprintf (buffer, sizeof (buffer), "Введите имя файла для загрузки: ");
-  mt_gotoXY (1, 26);
-  mt_delline ();
-  write (STDOUT_FILENO, buffer, strlen (buffer));
+  mt_printMessage ("Введите имя файла для загрузки: ");
   rk_read (buffer, sizeof (buffer));
   int result = sc_memoryLoad (buffer);
   if (result)
     {
-      mt_delline ();
-      snprintf (buffer, sizeof (buffer), "Неверное имя файла!");
-      mt_setbgcolor (RED);
-      write (STDOUT_FILENO, buffer, strlen (buffer));
-      mt_setdefaultcolor ();
+      mt_printMessage ("Неверное имя файла!");
       return -1;
     }
   mt_delline ();
