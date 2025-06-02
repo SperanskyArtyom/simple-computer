@@ -23,7 +23,7 @@ CU (void)
 
   // b. Декодируем команду
   sc_commandDecode (value, &sign, &command, &operand);
-  if (sign || sc_commandValidate (command))
+  if (sc_commandValidate (command))
     {
       sc_regSet (FLAG_INVALID_CMD, 1);
       sc_regSet (FLAG_IGNORE_CLOCK, 1);
@@ -79,7 +79,6 @@ CU (void)
           mt_printMessage ("LOAD error: memory out of bounds");
           break;
         }
-      int value;
       sc_accumulatorSet (value);
       icounterStep ();
       break;
