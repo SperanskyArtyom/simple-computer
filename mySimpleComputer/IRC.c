@@ -1,3 +1,4 @@
+#include <console.h>
 #include <mySimpleComputer.h>
 
 #include <signal.h>
@@ -13,6 +14,7 @@ IRC (int signum)
       sc_icounterInit ();
       sc_regInit ();
       sc_memoryInit ();
+      appendToHist (-1, 0);
       break;
 
     case SIGALRM:

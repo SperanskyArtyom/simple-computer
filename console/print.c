@@ -71,6 +71,18 @@ void
 appendToHist (int address, int input)
 {
   char buffer[20];
+  if (address == -1)
+    {
+      for (int i = 0; i < 4; i++)
+        {
+          termHist[i] = NULL;
+          mt_gotoXY (inOutBlockX + 1, inOutBlockY + i + 1);
+          write (STDOUT_FILENO, "        ", 8);
+        }
+      mt_gotoXY (inOutBlockX + 1, inOutBlockY + 5);
+      write (STDOUT_FILENO, "        ", 8);
+      return;
+    }
   int value, sign, command, operand;
   sc_memoryGet (address, &value);
   sc_commandDecode (value, &sign, &command, &operand);
