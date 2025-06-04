@@ -107,23 +107,31 @@ CU (void)
     case 0x29: // JNEG
       sc_accumulatorGet (&value);
       if (value & (1 << 14))
-        if (sc_icounterSet (operand))
-          {
-            sc_regSet (FLAG_MEM_OOB, 1);
-            sc_regSet (FLAG_IGNORE_CLOCK, 1);
-            mt_printMessage ("JNEG error: memory out of bounds");
-          }
+        {
+          if (sc_icounterSet (operand))
+            {
+              sc_regSet (FLAG_MEM_OOB, 1);
+              sc_regSet (FLAG_IGNORE_CLOCK, 1);
+              mt_printMessage ("JNEG error: memory out of bounds");
+            }
+        }
+      else
+        icounterStep ();
       break;
 
     case 0x2A: // JZ
       sc_accumulatorGet (&value);
       if (!value)
-        if (sc_icounterSet (operand))
-          {
-            sc_regSet (FLAG_MEM_OOB, 1);
-            sc_regSet (FLAG_IGNORE_CLOCK, 1);
-            mt_printMessage ("JNEG error: memory out of bounds");
-          }
+        {
+          if (sc_icounterSet (operand))
+            {
+              sc_regSet (FLAG_MEM_OOB, 1);
+              sc_regSet (FLAG_IGNORE_CLOCK, 1);
+              mt_printMessage ("JNEG error: memory out of bounds");
+            }
+        }
+      else
+        icounterStep ();
       break;
 
     case 0x2B: // HALT
