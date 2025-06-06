@@ -139,32 +139,32 @@ CU (void)
       break;
 
     case 0x3A: // JP
-        sc_accumulatorGet (&value);
-        if (value % 2 == 0)
-          {
-            if (sc_icounterSet (operand))
+      sc_accumulatorGet (&value);
+      if (value % 2 == 0)
+        {
+          if (sc_icounterSet (operand))
             {
               sc_regSet (FLAG_MEM_OOB, 1);
               sc_regSet (FLAG_IGNORE_CLOCK, 1);
               mt_printMessage ("JP error: memory out of bounds");
             }
-          }
-        else
-          icounterStep ();
+        }
+      else
+        icounterStep ();
 
     case 0x3B: // JNP
-        sc_accumulatorGet (&value);
-        if (value % 2 == 1)
-          {
-            if (sc_icounterSet (operand))
+      sc_accumulatorGet (&value);
+      if (value % 2 == 1)
+        {
+          if (sc_icounterSet (operand))
             {
               sc_regSet (FLAG_MEM_OOB, 1);
               sc_regSet (FLAG_IGNORE_CLOCK, 1);
               mt_printMessage ("JP error: memory out of bounds");
             }
-          }
-        else
-          icounterStep ();
+        }
+      else
+        icounterStep ();
 
     default:
       if (ALU (command, operand))
