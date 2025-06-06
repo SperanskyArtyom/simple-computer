@@ -12,8 +12,6 @@
 #include <time.h>
 #include <unistd.h>
 
-void updateFlags ();
-
 int
 main (int argc, char *argv[])
 {
@@ -69,8 +67,6 @@ main (int argc, char *argv[])
   int editingCellAdress = 0, editingCellValue;
 
   printCells (editingCellAdress);
-
-  updateFlags ();
 
   printAccumulator ();
   printFlags ();
@@ -166,7 +162,6 @@ main (int argc, char *argv[])
             {
               sc_memorySet (editingCellAdress, value);
 
-              updateFlags ();
               printFlags ();
               sc_memoryGet (editingCellAdress, &editingCellValue);
               printDecodedCommand (editingCellValue);
@@ -178,11 +173,11 @@ main (int argc, char *argv[])
 
         case KEY_L:
           rk_mytermrestore ();
+
           printCells (editingCellAdress);
           sc_memoryGet (editingCellAdress, &editingCellValue);
           printDecodedCommand (editingCellValue);
           printBigCell (bigchars, editingCellAdress);
-          updateFlags ();
           printFlags ();
           printCommand ();
           break;
@@ -207,7 +202,7 @@ main (int argc, char *argv[])
 
         case KEY_T:
           CU ();
-          updateFlags ();
+
           printFlags ();
           printAccumulator ();
           printBigCell (bigchars, editingCellAdress);
@@ -274,21 +269,4 @@ main (int argc, char *argv[])
   mt_gotoXY (30, winY);
 
   return 0;
-}
-
-void
-updateFlags ()
-{
-  for (int i = 0; i < 128; i++)
-    {
-      int sign, command, operand, value;
-      sc_memoryGet (i, &value);
-      sc_commandDecode (value, &sign, &command, &operand);
-      if (sign || sc_commandValidate (command))
-        {
-          sc_regSet (FLAG_INVALID_CMD, 1);
-          return;
-        }
-    }
-  sc_regSet (FLAG_INVALID_CMD, 0);
 }
