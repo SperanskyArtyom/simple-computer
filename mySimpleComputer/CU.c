@@ -8,7 +8,7 @@ icounterStep ()
 {
   int adress;
   sc_icounterGet (&adress);
-  sc_icounterSet (++adress);
+  sc_icounterSet ((adress + 1) % 128);
 }
 
 void
