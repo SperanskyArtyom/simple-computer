@@ -48,7 +48,7 @@ main (int argc, char *argv[])
           return 1;
         }
       int value;
-      if (sc_commandEncode (0, command, operand, &value) == 0)
+      if (sc_commandEncode (sign, command, operand, &value) == 0)
         {
           // Записываем в память
           if (sc_memorySet (address, value) != 0)
@@ -228,7 +228,7 @@ parse_line (char *line, int *address, int *sign, int *command, int *operand,
           return 1;
         }
       *operand = buffer & 0x7f;
-      *command = (buffer >> 7) & 0x7f;
+      *command = (buffer >> 8) & 0x7f;
       return 0;
     }
 
