@@ -121,6 +121,10 @@ translate_command (char *str, int size)
     return 0x29;
   if (strcmp (command, "JZ") == 0)
     return 0x2A;
+  if (strcmp (command, "JP") == 0)
+    return 0x3A;
+  if (strcmp (command, "JNP") == 0)
+    return 0x3B;
   if (strcmp (command, "HALT") == 0)
     return 0x2B;
   if (strcmp (command, "=") == 0)
