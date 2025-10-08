@@ -36,8 +36,7 @@ CU (void)
       break;
 
     case 0x01: // CPUINFO
-      mt_printMessage ("ИП 317: Калашникова Варвара Алекссевна, Сперанский "
-                       "Артём Александрович");
+      mt_printMessage ("ИП 317: Гуляев Владимир Игоревич");
       icounterStep ();
       break;
 
