@@ -137,6 +137,7 @@ CU (void)
       sc_regSet (FLAG_IGNORE_CLOCK, 1);
       break;
 
+      // Пользовательские функции
     case 0x37: // JNS
       sc_accumulatorGet (&value);
       if (value > 0)
@@ -145,7 +146,7 @@ CU (void)
             {
               sc_regSet (FLAG_MEM_OOB, 1);
               sc_regSet (FLAG_IGNORE_CLOCK, 1);
-              mt_printMessage ("JP error: memory out of bounds");
+              mt_printMessage ("JNS error: memory out of bounds");
             }
         }
       else
@@ -159,7 +160,7 @@ CU (void)
             {
               sc_regSet (FLAG_MEM_OOB, 1);
               sc_regSet (FLAG_IGNORE_CLOCK, 1);
-              mt_printMessage ("JP error: memory out of bounds");
+              mt_printMessage ("JC error: memory out of bounds");
             }
         }
       else
