@@ -137,9 +137,9 @@ CU (void)
       sc_regSet (FLAG_IGNORE_CLOCK, 1);
       break;
 
-    case 0x3A: // JP
+    case 0x37: // JNS
       sc_accumulatorGet (&value);
-      if (value % 2 == 0)
+      if (value > 0)
         {
           if (sc_icounterSet (operand))
             {
@@ -151,9 +151,9 @@ CU (void)
       else
         icounterStep ();
 
-    case 0x3B: // JNP
-      sc_accumulatorGet (&value);
-      if (value % 2 == 1)
+    case 0x38: // JC
+      sc_regGet (FLAG_OVERFLOW, &value);
+      if (value)
         {
           if (sc_icounterSet (operand))
             {
