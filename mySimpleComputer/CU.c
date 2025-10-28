@@ -140,7 +140,7 @@ CU (void)
       // Пользовательские функции
     case 0x37: // JNS
       sc_accumulatorGet (&value);
-      if (value > 0)
+      if (value && !(value & (1 << 14)))
         {
           if (sc_icounterSet (operand))
             {
@@ -151,6 +151,7 @@ CU (void)
         }
       else
         icounterStep ();
+      break;
 
     case 0x38: // JC
       sc_regGet (FLAG_OVERFLOW, &value);
@@ -165,6 +166,7 @@ CU (void)
         }
       else
         icounterStep ();
+      break;
 
     default:
       if (ALU (command, operand))
@@ -173,7 +175,6 @@ CU (void)
           mt_printMessage ("Error while ALU operation");
           break;
         }
-      icounterStep ();
       break;
     }
 }
