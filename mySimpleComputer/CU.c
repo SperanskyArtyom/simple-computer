@@ -175,6 +175,7 @@ CU (void)
           mt_printMessage ("Error while ALU operation");
           break;
         }
+      icounterStep ();
       break;
     }
 }
