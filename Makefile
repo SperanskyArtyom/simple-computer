@@ -82,6 +82,5 @@ clean:
 run:
 	./$(APP_PATH)
 
-font: $(FONT_PATH)
-
-sat: $(SAT_PATH)
+font: 
+	./$(FONT_PATH)
